@@ -1,0 +1,13 @@
+﻿HIRE FLOW environment audit
+Date: 2026-11-02 22:08:51
+Workspace: C:\Users\mudas\Documents\HIRE-FLOW
+
+Node.js: v26.10.0
+npm: 11.19.1
+Git: git version 2.55.0.windows.5
+PostgreSQL client (psql): NOT FOUND
+MongoDB Shell (mongosh): NOT FOUND
+MongoDB server (mongod): NOT FOUND
+
+Git name: mudassar
+Git email: mudassarnazer2007@gmail.com
