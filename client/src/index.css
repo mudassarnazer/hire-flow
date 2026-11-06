@@ -1,0 +1,61 @@
+:root {
+  font-family: Inter, sans-serif;
+  color: #f8fafc;
+  background: #0b1020;
+
+  --color-background: #0b1020;
+  --color-surface: #111a2e;
+  --color-card: #172238;
+
+  --color-primary: #6366f1;
+  --color-secondary: #8b5cf6;
+  --color-accent: #22d3ee;
+
+  --color-text: #f8fafc;
+  --color-muted: #a7b2c5;
+
+  --color-border: rgba(148, 163, 184, 0.15);
+
+  --gradient-primary: linear-gradient(
+    135deg,
+    #6366f1,
+    #8b5cf6,
+    #22d3ee
+  );
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: #6366f1;
+  color: white;
+}
