@@ -1,0 +1,101 @@
+.hireflow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.hireflow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* SIZES */
+.hireflow-btn--sm {
+  padding: 8px 14px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.hireflow-btn--md {
+  padding: 11px 22px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+.hireflow-btn--lg {
+  padding: 15px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+/* VARIANTS */
+.hireflow-btn--primary {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+}
+
+.hireflow-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+}
+
+.hireflow-btn--secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.hireflow-btn--secondary:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.hireflow-btn--outline {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-text);
+  border: 1px solid rgba(139, 92, 246, 0.45);
+}
+
+.hireflow-btn--outline:hover {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.hireflow-btn--ghost {
+  background: transparent;
+  color: var(--color-muted);
+}
+
+.hireflow-btn--ghost:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hireflow-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hireflow-btn {
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}

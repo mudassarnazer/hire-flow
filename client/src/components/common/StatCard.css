@@ -1,0 +1,102 @@
+.hireflow-stat-card {
+  padding: 22px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hireflow-stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.hireflow-stat-card--primary:hover::before {
+  background: var(--gradient-primary);
+}
+
+.hireflow-stat-card--accent:hover::before {
+  background: var(--color-accent);
+}
+
+.hireflow-stat-card--success:hover::before {
+  background: #22c55e;
+}
+
+.hireflow-stat-card--warning:hover::before {
+  background: #f59e0b;
+}
+
+.hireflow-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.hireflow-stat-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hireflow-stat-card__icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 18px;
+  color: #c4b5fd;
+}
+
+.hireflow-stat-card__trend {
+  font-size: 11px;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.hireflow-stat-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hireflow-stat-card__value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+
+.hireflow-stat-card__label {
+  font-size: 13px;
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hireflow-stat-card {
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,141 @@
+.dashboard-header {
+  position: relative;
+  overflow: hidden;
+  padding: 32px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-header__glow {
+  position: absolute;
+  top: -60px;
+  right: -40px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.2),
+    rgba(139, 92, 246, 0.05) 50%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.dashboard-header__profile {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.dashboard-header__avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  background: var(--gradient-primary);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+  flex-shrink: 0;
+}
+
+.dashboard-header__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dashboard-header__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dashboard-header__greeting {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #a78bfa;
+}
+
+.dashboard-header__title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.dashboard-header__title span {
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.dashboard-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--color-muted);
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.dashboard-header__actions {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+@media (max-width: 850px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .dashboard-header__actions {
+    width: 100%;
+  }
+
+  .dashboard-header__actions .hireflow-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 550px) {
+  .dashboard-header__profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .dashboard-header__avatar {
+    width: 54px;
+    height: 54px;
+    font-size: 20px;
+    border-radius: 14px;
+  }
+
+  .dashboard-header__meta {
+    gap: 8px;
+    font-size: 12px;
+  }
+}

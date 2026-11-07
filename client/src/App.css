@@ -64,9 +64,13 @@
 }
 
 .hero-primary-btn {
+  border: none;
   background: var(--gradient-primary);
   color: white;
   box-shadow: 0 8px 30px rgba(99, 102, 241, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-primary-btn:hover {
