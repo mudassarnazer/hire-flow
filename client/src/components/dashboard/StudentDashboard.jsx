@@ -15,6 +15,33 @@ function StudentDashboard() {
     jobsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // Derive dynamic metrics from the mock student applications array
+  const applications = mockStudentData.applications
+
+  const totalSubmitted = applications.length
+  const underReviewCount = applications.filter((app) => app.status === 'Under Review').length
+  const interviewsCount = applications.filter((app) => app.status === 'Interview Scheduled').length
+  const offersCount = applications.filter((app) => app.status === 'Offer Received').length
+
+  const dynamicMetrics = mockStudentData.metrics.map((metric) => {
+    switch (metric.label) {
+      case 'Applications Submitted':
+        return { ...metric, value: String(totalSubmitted) }
+      case 'Under Review':
+        return {
+          ...metric,
+          value: String(underReviewCount),
+          trend: `${underReviewCount} active processes`,
+        }
+      case 'Interviews Scheduled':
+        return { ...metric, value: String(interviewsCount) }
+      case 'Offers Received':
+        return { ...metric, value: String(offersCount) }
+      default:
+        return metric
+    }
+  })
+
   return (
     <main className="student-dashboard">
       <div className="student-dashboard__container">
@@ -26,7 +53,7 @@ function StudentDashboard() {
 
         {/* Top KPI Metrics Row */}
         <section className="student-dashboard__metrics">
-          {mockStudentData.metrics.map((metric) => (
+          {dynamicMetrics.map((metric) => (
             <StatCard
               key={metric.id}
               value={metric.value}
@@ -43,7 +70,7 @@ function StudentDashboard() {
           {/* Main Column */}
           <div className="student-dashboard__main">
             {/* Application Pipeline */}
-            <ApplicationTracker applications={mockStudentData.applications} />
+            <ApplicationTracker applications={applications} />
 
             {/* Recommended Opportunities using Existing JobCard */}
             <section ref={jobsRef} className="dashboard-jobs-section">
