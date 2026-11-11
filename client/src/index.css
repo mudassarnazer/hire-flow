@@ -1,3 +1,14 @@
+@import "tailwindcss";
+@theme {
+  --color-hf-bg: #0b1020;
+  --color-hf-surface: #111a2e;
+  --color-hf-card: #172238;
+  --color-hf-primary: #6366f1;
+  --color-hf-secondary: #8b5cf6;
+  --color-hf-accent: #22d3ee;
+  --color-hf-text: #f8fafc;
+  --color-hf-muted: #a7b2c5;
+}
 :root {
   font-family: Inter, sans-serif;
   color: #f8fafc;
@@ -24,10 +35,12 @@
   );
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
 html {
