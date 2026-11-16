@@ -8,6 +8,31 @@
   --color-hf-accent: #22d3ee;
   --color-hf-text: #f8fafc;
   --color-hf-muted: #a7b2c5;
+
+  --animate-navbar-enter: navbarEnter 0.8s ease-out both;
+  --animate-mobile-menu-enter: mobileMenuEnter 0.25s ease-out both;
+
+  @keyframes navbarEnter {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes mobileMenuEnter {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 :root {
   font-family: Inter, sans-serif;
