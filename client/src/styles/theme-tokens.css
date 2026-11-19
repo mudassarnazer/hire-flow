@@ -1,0 +1,171 @@
+/* ==========================================================================
+   HIRE-FLOW — DUAL-THEME SEMANTIC TOKEN ENGINE
+   Light: Iridescent Chrome | Dark: Anodized Dark
+   Developer Attribution: MUDASSAR NAZER
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Shared Base Properties & Kinetic Registration
+   -------------------------------------------------------------------------- */
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* --------------------------------------------------------------------------
+   2. Light Theme Defaults — Iridescent Chrome
+      Active on :root and explicit html[data-theme="light"]
+   -------------------------------------------------------------------------- */
+:root,
+html[data-theme="light"] {
+  color-scheme: light;
+
+  /* --- Canvas & Surfaces --- */
+  --bg-canvas: #FAF8FF;
+  --bg-canvas-subtle: #F5F3FF;
+  --surface-card: rgba(255, 255, 255, 0.72);
+  --surface-card-hover: rgba(255, 255, 255, 0.90);
+  --surface-elevated: #FFFFFF;
+  --surface-glass: rgba(255, 255, 255, 0.36);
+  --glass-fill: rgba(255, 255, 255, 0.36);
+  --glass-border: rgba(124, 58, 237, 0.14);
+  --surface-glass-border: rgba(124, 58, 237, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --surface-glass-highlight: rgba(255, 255, 255, 0.95);
+
+  /* --- Glass Refraction Optics --- */
+  --glass-blur: 24px;
+  --glass-saturate: 190%;
+
+  /* --- High-Contrast Typographic Hierarchy --- */
+  --text-primary: #1E1B4B;       /* Primary deep indigo ink */
+  --text-secondary: #475569;     /* Secondary slate body */
+  --text-muted: #64748B;         /* Technical muted slate */
+
+  /* --- Brand Accent & Interactive States --- */
+  --color-accent: #7C3AED;       /* Electric violet */
+  --color-accent-hover: #6D28D9;
+  --color-accent-subtle: rgba(124, 58, 237, 0.08);
+  --color-accent-border: rgba(124, 58, 237, 0.28);
+  --color-accent-ink: #FFFFFF;   /* High-contrast ink on solid accent */
+
+  /* --- Ethereal Iridescent Living Spectrum --- */
+  --aurora-1: rgba(243, 232, 255, 0.85); /* #F3E8FF */
+  --aurora-2: rgba(252, 231, 243, 0.75); /* #FCE7F3 */
+  --aurora-3: rgba(224, 242, 254, 0.80); /* #E0F2FE */
+  --ambient-dot-grid: rgba(124, 58, 237, 0.07);
+  --flashlight-veil: rgba(124, 58, 237, 0.08);
+  --specular-gradient: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.9) 30%,
+    rgba(124, 58, 237, 0.45) 50%,
+    rgba(255, 255, 255, 0.9) 70%,
+    transparent 100%
+  );
+
+  /* --- Physical Depth & Tactile Shadows --- */
+  --shadow-glass: 0 20px 48px rgba(30, 27, 75, 0.06);
+  --shadow-specular: inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+  --shadow-accent: 0 8px 25px rgba(124, 58, 237, 0.25);
+  --shadow-card-hover: 0 16px 36px rgba(30, 27, 75, 0.10);
+
+  /* --- Compatibility Aliases for Existing Components --- */
+  --color-background: var(--bg-canvas);
+  --color-surface: var(--bg-canvas-subtle);
+  --color-card: var(--surface-card);
+  --color-text: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-border: var(--glass-border);
+  --color-primary: var(--color-accent);
+  --color-secondary: #9333EA;
+  --color-glacial: var(--color-accent);
+  --color-glacial-light: #EDE9FE;
+  --gradient-primary: linear-gradient(135deg, #7C3AED 0%, #9333EA 50%, #C084FC 100%);
+}
+
+/* --------------------------------------------------------------------------
+   3. Dark Theme Overrides — Anodized Dark
+      Active on html[data-theme="dark"]
+   -------------------------------------------------------------------------- */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* --- Canvas & Surfaces --- */
+  --bg-canvas: #09090B;
+  --bg-canvas-subtle: #121215;
+  --surface-card: #121215;
+  --surface-card-hover: #18181C;
+  --surface-elevated: #18181C;
+  --surface-glass: rgba(18, 18, 21, 0.65);
+  --glass-fill: rgba(18, 18, 21, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --surface-glass-border: rgba(255, 255, 255, 0.10);
+  --glass-highlight: rgba(204, 243, 129, 0.22);
+  --surface-glass-highlight: rgba(204, 243, 129, 0.22);
+
+  /* --- Glass Refraction Optics --- */
+  --glass-blur: 20px;
+  --glass-saturate: 180%;
+
+  /* --- High-Contrast Typographic Hierarchy --- */
+  --text-primary: #F4F4F5;       /* Crisp zinc */
+  --text-secondary: #A1A1AA;     /* Secondary zinc */
+  --text-muted: #71717A;         /* Muted technical zinc */
+
+  /* --- Brand Accent & Interactive States --- */
+  --color-accent: #CCF381;       /* Anodized neon lime */
+  --color-accent-hover: #D9F99D;
+  --color-accent-subtle: rgba(204, 243, 129, 0.10);
+  --color-accent-border: rgba(204, 243, 129, 0.32);
+  --color-accent-ink: #09090B;   /* Deep contrast text on neon */
+
+  /* --- Anodized Living Atmospheric Spectrum --- */
+  --aurora-1: rgba(204, 243, 129, 0.10);
+  --aurora-2: rgba(39, 39, 42, 0.65);
+  --aurora-3: rgba(24, 24, 27, 0.85);
+  --ambient-dot-grid: rgba(204, 243, 129, 0.05);
+  --flashlight-veil: rgba(204, 243, 129, 0.10);
+  --specular-gradient: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 30%,
+    rgba(204, 243, 129, 0.55) 50%,
+    rgba(255, 255, 255, 0.3) 70%,
+    transparent 100%
+  );
+
+  /* --- Physical Depth & Tactile Shadows --- */
+  --shadow-glass: 0 20px 48px rgba(0, 0, 0, 0.70);
+  --shadow-specular: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  --shadow-accent: 0 8px 25px rgba(204, 243, 129, 0.22);
+  --shadow-card-hover: 0 16px 36px rgba(0, 0, 0, 0.50);
+
+  /* --- Compatibility Aliases for Existing Components --- */
+  --color-background: var(--bg-canvas);
+  --color-surface: var(--bg-canvas-subtle);
+  --color-card: var(--surface-card);
+  --color-text: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-border: var(--glass-border);
+  --color-primary: var(--color-accent);
+  --color-secondary: #BEF264;
+  --color-glacial: var(--color-accent);
+  --color-glacial-light: #ECFCCB;
+  --gradient-primary: linear-gradient(135deg, #CCF381 0%, #A3E635 50%, #4ADE80 100%);
+}
+
+/* --------------------------------------------------------------------------
+   4. Universal Shared Typography Stacks & Parallax Coordinate Defaults
+   -------------------------------------------------------------------------- */
+:root {
+  --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Pointer Parallax Coordinates (Updated dynamically by pointer listeners) */
+  --cursor-x: -9999px;
+  --cursor-y: -9999px;
+  --bg-parallax-x: 0px;
+  --bg-parallax-y: 0px;
+}
