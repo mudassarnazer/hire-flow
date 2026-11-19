@@ -1,40 +1,134 @@
+import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
+
 const BASE_CLASSES =
-  'hireflow-btn inline-flex items-center justify-center gap-2 font-semibold border border-transparent cursor-pointer whitespace-nowrap select-none transition-all duration-[250ms] ease-out disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hf-primary focus-visible:ring-offset-2 focus-visible:ring-offset-hf-bg motion-reduce:transition-none motion-reduce:hover:translate-y-0'
+  'hireflow-btn inline-flex items-center justify-center gap-2 font-semibold cursor-pointer whitespace-nowrap select-none transition-all duration-200 ease-out disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#38bdf8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070f] active:scale-[0.97] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100'
 
 const SIZE_CLASSES = {
-  sm: 'hireflow-btn--sm py-2 px-3.5 text-xs rounded-lg',
-  md: 'hireflow-btn--md py-[11px] px-[22px] text-sm rounded-[10px]',
-  lg: 'hireflow-btn--lg py-[15px] px-7 text-[15px] font-bold rounded-xl',
+  sm: 'hireflow-btn--sm py-2 px-3.5 text-xs rounded-full',
+  md: 'hireflow-btn--md py-[10px] px-5 text-sm rounded-full',
+  lg: 'hireflow-btn--lg py-[14px] px-7 text-[15px] font-bold rounded-full',
 }
 
 const VARIANT_CLASSES = {
+  // Tier 1: Glacial Border-Beam Hero Pill
+  beam: 'btn-border-beam text-white font-bold tracking-[-0.01em]',
+  'border-beam': 'btn-border-beam text-white font-bold tracking-[-0.01em]',
+
+  // Tier 2: Solid Luminous Glacial CTA
   primary:
-    'hireflow-btn--primary bg-[image:var(--gradient-primary)] text-white shadow-[0_8px_25px_rgba(99,102,241,0.25)] hover:-translate-y-[2px] hover:shadow-[0_12px_30px_rgba(99,102,241,0.4)]',
+    'hireflow-btn--primary btn-luminous-cta text-[#050811] font-extrabold shadow-[0_8px_25px_rgba(56,189,248,0.32)] border border-white/35 hover:-translate-y-[2px] hover:shadow-[0_12px_34px_rgba(56,189,248,0.48)]',
+  luminous:
+    'hireflow-btn--primary btn-luminous-cta text-[#050811] font-extrabold shadow-[0_8px_25px_rgba(56,189,248,0.32)] border border-white/35 hover:-translate-y-[2px] hover:shadow-[0_12px_34px_rgba(56,189,248,0.48)]',
+
+  // Tier 3: Dark Glass Spotlight Secondary Pill
   secondary:
-    'hireflow-btn--secondary bg-white/[0.04] text-hf-text border-[var(--color-border)] hover:bg-[rgba(139,92,246,0.15)] hover:border-[rgba(139,92,246,0.5)] hover:-translate-y-[2px]',
+    'btn-secondary-pill hireflow-btn--secondary text-[#f8fafc] border border-white/15 backdrop-blur-[14px] hover:border-cyan-400/45 hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.35)]',
+  spotlight:
+    'btn-secondary-pill hireflow-btn--secondary text-[#f8fafc] border border-white/15 backdrop-blur-[14px] hover:border-cyan-400/45 hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.35)]',
+
+  // Backward-compatible Utility Variants
   outline:
-    'hireflow-btn--outline bg-[rgba(99,102,241,0.1)] text-hf-text border-[rgba(139,92,246,0.45)] hover:bg-[image:var(--gradient-primary)] hover:border-transparent hover:text-white hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(99,102,241,0.3)]',
+    'hireflow-btn--outline bg-cyan-500/[0.08] text-cyan-300 border border-cyan-400/35 backdrop-blur-[8px] hover:bg-cyan-500/[0.18] hover:border-cyan-400/60 hover:text-white hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(56,189,248,0.2)]',
   ghost:
-    'hireflow-btn--ghost bg-transparent text-hf-muted hover:text-hf-text hover:bg-white/[0.05]',
+    'hireflow-btn--ghost bg-transparent text-slate-300 hover:text-white hover:bg-white/[0.06]',
 }
 
-function Button({
-  children,
-  variant = 'primary',
-  size = 'md',
-  onClick,
-  type = 'button',
-  disabled = false,
-  className = '',
-  icon = null,
-  ...rest
-}) {
+/**
+ * Button Component
+ * Executive Three-Tier Obsidian & Glacial Cyan button with magnetic pointer attraction
+ * Developer Attribution: MUDASSAR NAZER
+ *
+ * System Architecture:
+ * - Tier 1 (`beam`): Glacial Border-Beam Hero Pill with rotating conic aura.
+ * - Tier 2 (`primary` / `luminous`): Solid Luminous Cyan CTA with diagonal shimmer pass.
+ * - Tier 3 (`secondary` / `spotlight`): Dark Glass Spotlight Pill with hairline glacial border.
+ * - Magnetic attraction with maximum displacement ±6px on fine-pointer devices.
+ * - Smooth spring-back to neutral (0, 0) on pointer leave.
+ * - Zero React re-renders: writes directly to DOM styles (--mag-x, --mag-y).
+ * - Full accessibility: forwardRef, focus-visible rings, keyboard triggerable.
+ */
+const Button = forwardRef(function Button(
+  {
+    children,
+    variant = 'primary',
+    size = 'md',
+    onClick,
+    type = 'button',
+    disabled = false,
+    className = '',
+    icon = null,
+    magnetic,
+    ...rest
+  },
+  ref
+) {
+  const innerRef = useRef(null)
+  useImperativeHandle(ref, () => innerRef.current)
+
+  // Magnetic attraction enabled by default on primary/beam variants, or when explicitly passed
+  const isMagnetic =
+    !disabled &&
+    (magnetic ??
+      (variant === 'primary' ||
+        variant === 'beam' ||
+        variant === 'border-beam' ||
+        variant === 'luminous'))
+
+  useEffect(() => {
+    const btn = innerRef.current
+    if (!btn || !isMagnetic || typeof window === 'undefined') return
+
+    const hasFinePointer =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    const prefersReducedMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!hasFinePointer || prefersReducedMotion) return
+
+    const handlePointerMove = (e) => {
+      const rect = btn.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) return
+
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+
+      // Normalize delta from center (-1 to 1) and scale to max ±6px
+      const normX = (e.clientX - centerX) / (rect.width / 2)
+      const normY = (e.clientY - centerY) / (rect.height / 2)
+
+      const magX = Math.max(-6, Math.min(6, normX * 6))
+      const magY = Math.max(-6, Math.min(6, normY * 6))
+
+      btn.style.setProperty('--mag-x', `${magX.toFixed(2)}px`)
+      btn.style.setProperty('--mag-y', `${magY.toFixed(2)}px`)
+    }
+
+    const handlePointerLeave = () => {
+      btn.style.setProperty('--mag-x', '0px')
+      btn.style.setProperty('--mag-y', '0px')
+    }
+
+    btn.addEventListener('pointermove', handlePointerMove, { passive: true })
+    btn.addEventListener('pointerleave', handlePointerLeave, { passive: true })
+
+    return () => {
+      btn.removeEventListener('pointermove', handlePointerMove)
+      btn.removeEventListener('pointerleave', handlePointerLeave)
+      btn.style.setProperty('--mag-x', '0px')
+      btn.style.setProperty('--mag-y', '0px')
+    }
+  }, [isMagnetic])
+
   const variantClass = VARIANT_CLASSES[variant] || VARIANT_CLASSES.primary
   const sizeClass = SIZE_CLASSES[size] || SIZE_CLASSES.md
-  const buttonClass = `${BASE_CLASSES} ${variantClass} ${sizeClass} ${className}`.trim()
+  const magneticClass = isMagnetic ? 'hireflow-btn--magnetic' : ''
+  const buttonClass = `${BASE_CLASSES} ${variantClass} ${sizeClass} ${magneticClass} ${className}`.trim()
 
   return (
     <button
+      ref={innerRef}
       type={type}
       className={buttonClass}
       onClick={onClick}
@@ -49,6 +143,8 @@ function Button({
       <span className="hireflow-btn__text">{children}</span>
     </button>
   )
-}
+})
+
+Button.displayName = 'Button'
 
 export default Button

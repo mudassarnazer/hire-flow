@@ -1,3 +1,12 @@
+/* ==========================================================================
+   UPCOMING SCHEDULE & PLACEMENT READINESS SCORE — OBSIDIAN & GLACIAL CYAN
+   Project: HIRE-FLOW
+   Developer: MUDASSAR NAZER
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Aside Container & Card Panels
+   -------------------------------------------------------------------------- */
 .upcoming-schedule {
   display: flex;
   flex-direction: column;
@@ -6,13 +15,13 @@
 
 .schedule-card,
 .readiness-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
   padding: 26px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
+/* --------------------------------------------------------------------------
+   2. Card Headers & Kickers
+   -------------------------------------------------------------------------- */
 .schedule-card__header {
   display: flex;
   justify-content: space-between;
@@ -20,59 +29,72 @@
   gap: 15px;
   margin-bottom: 22px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--glass-border, rgba(186, 230, 253, 0.16));
 }
 
 .schedule-card__kicker,
 .readiness-card__kicker {
-  color: #a78bfa;
+  color: var(--color-glacial, #38bdf8);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   display: block;
   margin-bottom: 5px;
 }
 
 .schedule-card__title,
 .readiness-card__title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
   font-size: 20px;
   font-weight: 800;
-  color: var(--color-text);
-  letter-spacing: -0.5px;
+  color: var(--text-primary, #f8fafc);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
+/* --------------------------------------------------------------------------
+   3. Schedule Items List
+   -------------------------------------------------------------------------- */
 .schedule-card__items {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .schedule-card__empty {
-  color: var(--color-muted);
+  color: var(--text-muted, #64748b);
   font-size: 13px;
-  padding: 20px 0;
+  padding: 24px 0;
   text-align: center;
 }
 
 .schedule-item {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid var(--glass-border, rgba(186, 230, 253, 0.16));
   border-radius: 14px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: transform 0.25s ease, border-color 0.25s ease;
-}
-
-.schedule-item--active {
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .schedule-item:hover {
   transform: translateY(-2px);
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 16px rgba(56, 189, 248, 0.1);
+}
+
+.schedule-item--active {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(224, 242, 254, 0.16);
+}
+
+.schedule-item--active:hover {
+  border-color: rgba(56, 189, 248, 0.75);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 24px rgba(56, 189, 248, 0.22);
 }
 
 .schedule-item__top {
@@ -82,36 +104,61 @@
   gap: 10px;
 }
 
+.schedule-item__company-box {
+  min-width: 0;
+}
+
 .schedule-item__company-box strong {
-  font-size: 16px;
-  color: var(--color-text);
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
   display: block;
+  line-height: 1.3;
+  overflow-wrap: break-word;
 }
 
 .schedule-item__role {
-  font-size: 12px;
-  color: var(--color-muted);
+  font-size: 12.5px;
+  color: var(--text-secondary, #94a3b8);
+  margin-top: 2px;
+  display: block;
+  overflow-wrap: break-word;
 }
 
 .schedule-item__round {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(14, 165, 233, 0.07);
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 .schedule-item__round-name {
   font-size: 12px;
   font-weight: 600;
-  color: #c4b5fd;
+  color: var(--color-glacial, #38bdf8);
+  line-height: 1.4;
+  overflow-wrap: break-word;
 }
 
 .schedule-item__details {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--color-muted);
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.schedule-item__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-item__icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .schedule-item__footer {
@@ -120,61 +167,108 @@
   align-items: center;
   gap: 10px;
   margin-top: 4px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   flex-wrap: wrap;
 }
 
 .schedule-item__interviewer {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 11.5px;
+  color: var(--text-muted, #64748b);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
-/* READINESS CARD */
+/* --------------------------------------------------------------------------
+   4. AI Placement Readiness Score Meter
+   -------------------------------------------------------------------------- */
+.readiness-card__header {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--glass-border, rgba(186, 230, 253, 0.16));
+}
+
 .readiness-card__meter {
   display: flex;
   align-items: center;
   gap: 20px;
-  margin: 18px 0;
+  margin: 18px 0 20px;
 }
 
 .readiness-card__score-circle {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  border: 3px solid #22d3ee;
-  background: rgba(34, 211, 238, 0.08);
+  position: relative;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.readiness-card__score-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.25));
+}
+
+.readiness-card__circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 6;
+}
+
+.readiness-card__circle-bar {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.readiness-card__score-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 25px rgba(34, 211, 238, 0.2);
+  text-align: center;
 }
 
 .readiness-card__number {
   font-size: 24px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary, #ffffff);
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .readiness-card__percent {
   font-size: 10px;
-  color: var(--color-muted);
-  margin-top: 2px;
+  color: var(--text-secondary, #94a3b8);
+  margin-top: 3px;
+  font-weight: 600;
 }
 
 .readiness-card__feedback strong {
-  font-size: 14px;
-  color: var(--color-text);
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
   display: block;
   margin-bottom: 4px;
+  line-height: 1.3;
 }
 
 .readiness-card__feedback p {
-  font-size: 12px;
-  color: var(--color-muted);
+  font-size: 12.5px;
+  color: var(--text-secondary, #94a3b8);
   line-height: 1.5;
 }
 
@@ -182,12 +276,50 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
+/* --------------------------------------------------------------------------
+   5. Responsive Adaptations
+   -------------------------------------------------------------------------- */
+@media (max-width: 650px) {
+  .schedule-card,
+  .readiness-card {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+
+  .schedule-item {
+    padding: 15px;
+  }
+
+  .schedule-item__footer .hireflow-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .readiness-card__meter {
+    flex-direction: column;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .readiness-card__tags {
+    justify-content: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Strict Reduced-Motion Safety
+   -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .schedule-item {
     transition: none !important;
     transform: none !important;
+  }
+
+  .readiness-card__circle-bar {
+    transition: none !important;
   }
 }

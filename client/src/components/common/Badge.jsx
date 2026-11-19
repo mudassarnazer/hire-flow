@@ -1,27 +1,27 @@
 const BASE_CLASSES =
-  'hireflow-badge inline-flex items-center gap-1.5 font-semibold rounded-full border border-transparent leading-none w-fit whitespace-nowrap select-none transition-colors duration-200 motion-reduce:transition-none'
+  'hireflow-badge inline-flex items-center gap-1.5 font-semibold rounded-full border leading-none w-fit whitespace-nowrap select-none backdrop-blur-[12px] transition-colors duration-200 motion-reduce:transition-none'
 
 const SIZE_CLASSES = {
-  sm: 'hireflow-badge--sm py-1 px-[9px] text-[11px]',
+  sm: 'hireflow-badge--sm py-1 px-2.5 text-[11px]',
   md: 'hireflow-badge--md py-1.5 px-3 text-xs',
   lg: 'hireflow-badge--lg py-2 px-3.5 text-sm',
 }
 
 const VARIANT_CLASSES = {
   primary:
-    'hireflow-badge--primary bg-[rgba(99,102,241,0.14)] text-[#a5b4fc] border-[rgba(99,102,241,0.28)]',
+    'hireflow-badge--primary bg-sky-500/10 text-sky-300 border-sky-400/30 shadow-[0_0_12px_rgba(56,189,248,0.08)]',
   accent:
-    'hireflow-badge--accent bg-[rgba(34,211,238,0.12)] text-[#22d3ee] border-[rgba(34,211,238,0.3)]',
+    'hireflow-badge--accent bg-cyan-500/10 text-cyan-300 border-cyan-400/35 shadow-[0_0_12px_rgba(34,211,238,0.08)]',
   success:
-    'hireflow-badge--success bg-[rgba(34,197,94,0.12)] text-[#4ade80] border-[rgba(34,197,94,0.32)]',
+    'hireflow-badge--success bg-emerald-500/12 text-emerald-300 border-emerald-400/35 shadow-[0_0_12px_rgba(52,211,153,0.08)]',
   warning:
-    'hireflow-badge--warning bg-[rgba(245,158,11,0.12)] text-[#fbbf24] border-[rgba(245,158,11,0.32)]',
+    'hireflow-badge--warning bg-amber-500/12 text-amber-300 border-amber-400/35 shadow-[0_0_12px_rgba(251,191,36,0.08)]',
   neutral:
-    'hireflow-badge--neutral bg-[rgba(148,163,184,0.08)] text-[#cbd5e1] border-[var(--color-border)]',
+    'hireflow-badge--neutral bg-slate-500/10 text-slate-300 border-white/12',
   hero:
-    'hireflow-badge--hero bg-[rgba(139,92,246,0.12)] text-[#c4b5fd] border-[rgba(139,92,246,0.35)] py-2 px-4 rounded-[30px] text-[13px]',
+    'hireflow-badge--hero bg-violet-500/12 text-violet-200 border-violet-400/30 py-2 px-4 text-[13px] shadow-[0_0_16px_rgba(139,92,246,0.12)]',
   gradient:
-    'hireflow-badge--gradient bg-[image:var(--gradient-primary)] text-white border-transparent',
+    'hireflow-badge--gradient bg-gradient-to-r from-sky-400 to-indigo-500 text-white border-transparent shadow-[0_4px_14px_rgba(56,189,248,0.25)]',
 }
 
 function Badge({
@@ -41,7 +41,7 @@ function Badge({
     <span className={badgeClass} {...rest}>
       {dot && (
         <span
-          className="hireflow-badge__dot w-1.5 h-1.5 rounded-full bg-current shrink-0"
+          className="hireflow-badge__dot w-1.5 h-1.5 rounded-full bg-current shrink-0 shadow-[0_0_6px_currentColor]"
           aria-hidden="true"
         />
       )}

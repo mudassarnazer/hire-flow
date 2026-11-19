@@ -51,8 +51,11 @@ function StudentDashboard() {
           onExploreJobs={handleScrollToJobs}
         />
 
-        {/* Top KPI Metrics Row */}
-        <section className="student-dashboard__metrics">
+        {/* Bento Top KPI Metrics Row */}
+        <section
+          className="student-dashboard__metrics glass-panel glass-specular-edge"
+          aria-label="Placement KPI Metrics"
+        >
           {dynamicMetrics.map((metric) => (
             <StatCard
               key={metric.id}
@@ -65,7 +68,7 @@ function StudentDashboard() {
           ))}
         </section>
 
-        {/* 2-Column Main Workspace */}
+        {/* Asymmetric 2-Column Bento Workspace */}
         <div className="student-dashboard__layout">
           {/* Main Column */}
           <div className="student-dashboard__main">
@@ -73,13 +76,18 @@ function StudentDashboard() {
             <ApplicationTracker applications={applications} />
 
             {/* Recommended Opportunities using Existing JobCard */}
-            <section ref={jobsRef} className="dashboard-jobs-section">
+            <section ref={jobsRef} className="dashboard-jobs-section glass-panel glass-specular-edge">
               <div className="dashboard-jobs-section__header">
                 <div>
-                  <span className="dashboard-jobs-section__kicker">MATCHED OPPORTUNITIES</span>
-                  <h2 className="dashboard-jobs-section__title">Recommended for Your Profile</h2>
+                  <span className="dashboard-jobs-section__kicker">
+                    MATCHED OPPORTUNITIES
+                  </span>
+                  <h2 className="dashboard-jobs-section__title">
+                    Recommended for Your Profile
+                  </h2>
                   <p className="dashboard-jobs-section__subtitle">
-                    Opportunities matching your skills: {mockStudentData.profile.skills.slice(0, 3).join(', ')} & more.
+                    Opportunities matching your skills:{' '}
+                    {mockStudentData.profile.skills.slice(0, 3).join(', ')} & more.
                   </p>
                 </div>
               </div>

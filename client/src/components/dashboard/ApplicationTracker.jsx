@@ -133,7 +133,7 @@ function ApplicationTracker({ applications = [] }) {
   }
 
   return (
-    <section className="app-tracker" aria-labelledby="tracker-heading">
+    <section className="app-tracker glass-panel glass-specular-edge" aria-labelledby="tracker-heading">
       <div className="app-tracker__header">
         <div>
           <span className="app-tracker__kicker">RECRUITMENT PIPELINE</span>
@@ -156,7 +156,7 @@ function ApplicationTracker({ applications = [] }) {
             aria-pressed={filter === 'all'}
             onClick={() => setFilter('all')}
           >
-            All ({applications.length})
+            All <span className="filter-count font-mono-tech tabular-nums">({applications.length})</span>
           </button>
           <button
             type="button"
@@ -164,7 +164,7 @@ function ApplicationTracker({ applications = [] }) {
             aria-pressed={filter === 'interviews'}
             onClick={() => setFilter('interviews')}
           >
-            Interviews ({interviewsCount})
+            Interviews <span className="filter-count font-mono-tech tabular-nums">({interviewsCount})</span>
           </button>
           <button
             type="button"
@@ -172,7 +172,7 @@ function ApplicationTracker({ applications = [] }) {
             aria-pressed={filter === 'in-review'}
             onClick={() => setFilter('in-review')}
           >
-            In Review ({inReviewCount})
+            In Review <span className="filter-count font-mono-tech tabular-nums">({inReviewCount})</span>
           </button>
           <button
             type="button"
@@ -180,7 +180,7 @@ function ApplicationTracker({ applications = [] }) {
             aria-pressed={filter === 'offers'}
             onClick={() => setFilter('offers')}
           >
-            Offers ({offersCount})
+            Offers <span className="filter-count font-mono-tech tabular-nums">({offersCount})</span>
           </button>
         </div>
       </div>
@@ -222,14 +222,14 @@ function ApplicationTracker({ applications = [] }) {
               onClick={() => setSearchQuery('')}
               aria-label="Clear search query"
             >
-              ✕
+              <span aria-hidden="true">✕</span>
             </button>
           )}
         </div>
 
         {searchQuery.trim() !== '' && (
           <div className="app-tracker__search-info" aria-live="polite">
-            Showing {filteredApplications.length}{' '}
+            Showing <span className="font-mono-tech tabular-nums font-semibold text-slate-200">{filteredApplications.length}</span>{' '}
             {filteredApplications.length === 1 ? 'application' : 'applications'} matching &ldquo;
             {searchQuery}&rdquo;
           </div>
@@ -272,7 +272,7 @@ function ApplicationTracker({ applications = [] }) {
                 <div>
                   <h3 className="app-card__role">{app.role}</h3>
                   <p className="app-card__name">
-                    {app.company} • <span>📍 {app.location}</span>
+                    {app.company} • <span><span aria-hidden="true">📍</span> {app.location}</span>
                   </p>
                 </div>
               </div>
@@ -284,7 +284,7 @@ function ApplicationTracker({ applications = [] }) {
 
               <div className="app-card__date">
                 <span className="app-card__stage-label">Applied On</span>
-                <span className="app-card__stage-value">{app.appliedDate}</span>
+                <span className="app-card__stage-value font-mono-tech tabular-nums">{app.appliedDate}</span>
               </div>
 
               <div className="app-card__status">
@@ -292,7 +292,9 @@ function ApplicationTracker({ applications = [] }) {
                   {app.status}
                 </Badge>
                 {app.nextAction && (
-                  <span className="app-card__next-action">{app.nextAction}</span>
+                  <span className="app-card__next-action">
+                    <span aria-hidden="true">→</span> {app.nextAction}
+                  </span>
                 )}
               </div>
 
@@ -322,7 +324,7 @@ function ApplicationTracker({ applications = [] }) {
           >
             <div
               ref={modalRef}
-              className="app-modal__container"
+              className="app-modal__container glass-specular-edge"
               role="dialog"
               aria-modal="true"
               aria-labelledby="app-modal-title"
@@ -340,7 +342,7 @@ function ApplicationTracker({ applications = [] }) {
                       {selectedApplication.role}
                     </h3>
                     <p id="app-modal-company" className="app-modal__company-info">
-                      {selectedApplication.company} • <span>📍 {selectedApplication.location}</span>
+                      {selectedApplication.company} • <span><span aria-hidden="true">📍</span> {selectedApplication.location}</span>
                     </p>
                   </div>
                 </div>
@@ -351,7 +353,7 @@ function ApplicationTracker({ applications = [] }) {
                   onClick={handleCloseModal}
                   aria-label="Close application details modal"
                 >
-                  ✕
+                  <span aria-hidden="true">✕</span>
                 </button>
               </div>
 
@@ -388,17 +390,17 @@ function ApplicationTracker({ applications = [] }) {
 
                   <div className="app-modal__field">
                     <span className="app-modal__field-label">Location</span>
-                    <span className="app-modal__field-value">📍 {selectedApplication.location}</span>
+                    <span className="app-modal__field-value"><span aria-hidden="true">📍</span> {selectedApplication.location}</span>
                   </div>
 
                   <div className="app-modal__field">
                     <span className="app-modal__field-label">Stipend</span>
-                    <span className="app-modal__field-value">{selectedApplication.stipend}</span>
+                    <span className="app-modal__field-value font-mono-tech tabular-nums">{selectedApplication.stipend}</span>
                   </div>
 
                   <div className="app-modal__field">
                     <span className="app-modal__field-label">Application Date</span>
-                    <span className="app-modal__field-value">{selectedApplication.appliedDate}</span>
+                    <span className="app-modal__field-value font-mono-tech tabular-nums">{selectedApplication.appliedDate}</span>
                   </div>
 
                   <div className="app-modal__field">

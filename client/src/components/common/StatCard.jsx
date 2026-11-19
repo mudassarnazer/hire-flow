@@ -28,22 +28,22 @@ function StatCard({
     <div className={cardClass} {...rest}>
       <div className="hireflow-stat-card__top flex items-center justify-between gap-[10px]">
         {icon && (
-          <div className="hireflow-stat-card__icon w-10 h-10 grid place-items-center rounded-[10px] bg-[rgba(99,102,241,0.12)] border border-[rgba(99,102,241,0.2)] text-[18px] text-[#c4b5fd]">
+          <div className="hireflow-stat-card__icon w-10 h-10 grid place-items-center rounded-[10px] bg-[var(--glass-fill)] border border-[var(--glass-border)] text-[18px] text-[var(--color-cyan)] shadow-[0_0_12px_rgba(56,189,248,0.12)]">
             {icon}
           </div>
         )}
         {trend && (
-          <span className="hireflow-stat-card__trend py-1 px-2 rounded-[12px] text-[11px] font-semibold text-[#38bdf8] bg-[rgba(56,189,248,0.1)] border border-[rgba(56,189,248,0.2)]">
+          <span className="hireflow-stat-card__trend py-1 px-2.5 rounded-full text-[11px] font-semibold text-[var(--color-glacial)] bg-[rgba(56,189,248,0.1)] border border-[rgba(56,189,248,0.25)]">
             {trend}
           </span>
         )}
       </div>
 
       <div className="hireflow-stat-card__body flex flex-col gap-1">
-        <h3 className="hireflow-stat-card__value text-[28px] font-extrabold tracking-[-0.5px] text-[var(--color-text)] leading-[1.1]">
+        <h3 className="hireflow-stat-card__value text-[28px] font-extrabold tracking-[-0.5px] text-[var(--text-primary)] leading-[1.1]">
           {value}
         </h3>
-        <p className="hireflow-stat-card__label text-[13px] text-[var(--color-muted)] font-medium">
+        <p className="hireflow-stat-card__label text-[13px] text-[var(--text-secondary)] font-medium">
           {label}
         </p>
       </div>
