@@ -50,6 +50,48 @@ html[data-theme="light"] {
   --color-accent-border: rgba(124, 58, 237, 0.28);
   --color-accent-ink: #FFFFFF;   /* High-contrast ink on solid accent */
 
+  /* --- Badge & Status Semantic Indicators --- */
+  --badge-primary-bg: rgba(124, 58, 237, 0.08);
+  --badge-primary-text: #6D28D9;
+  --badge-primary-border: rgba(124, 58, 237, 0.26);
+  --badge-primary-shadow: 0 0 12px rgba(124, 58, 237, 0.10);
+
+  --badge-accent-bg: rgba(14, 165, 233, 0.10);
+  --badge-accent-text: #0369A1;
+  --badge-accent-border: rgba(14, 165, 233, 0.28);
+  --badge-accent-shadow: 0 0 12px rgba(14, 165, 233, 0.10);
+
+  --badge-success-bg: rgba(16, 185, 129, 0.10);
+  --badge-success-text: #047857;
+  --badge-success-border: rgba(16, 185, 129, 0.28);
+  --badge-success-shadow: 0 0 12px rgba(16, 185, 129, 0.10);
+
+  --badge-warning-bg: rgba(245, 158, 11, 0.10);
+  --badge-warning-text: #B45309;
+  --badge-warning-border: rgba(245, 158, 11, 0.30);
+  --badge-warning-shadow: 0 0 12px rgba(245, 158, 11, 0.10);
+
+  --badge-neutral-bg: rgba(100, 116, 139, 0.10);
+  --badge-neutral-text: #334155;
+  --badge-neutral-border: rgba(100, 116, 139, 0.22);
+  --badge-neutral-shadow: none;
+
+  --badge-hero-bg: rgba(124, 58, 237, 0.10);
+  --badge-hero-text: #5B21B6;
+  --badge-hero-border: rgba(124, 58, 237, 0.28);
+  --badge-hero-shadow: 0 0 16px rgba(124, 58, 237, 0.12);
+
+  /* --- Status Beacons --- */
+  --beacon-cyan: #0284C7;
+  --beacon-emerald: #059669;
+  --beacon-amber: #D97706;
+  --beacon-indigo: #7C3AED;
+
+  /* --- Atmospheric Spectrum Fallbacks --- */
+  --color-cyan: #0284C7;
+  --color-indigo: #4338CA;
+  --color-teal: #0D9488;
+
   /* --- Ethereal Iridescent Living Spectrum --- */
   --aurora-1: rgba(243, 232, 255, 0.85); /* #F3E8FF */
   --aurora-2: rgba(252, 231, 243, 0.75); /* #FCE7F3 */
@@ -120,6 +162,48 @@ html[data-theme="dark"] {
   --color-accent-subtle: rgba(204, 243, 129, 0.10);
   --color-accent-border: rgba(204, 243, 129, 0.32);
   --color-accent-ink: #09090B;   /* Deep contrast text on neon */
+
+  /* --- Badge & Status Semantic Indicators --- */
+  --badge-primary-bg: rgba(204, 243, 129, 0.12);
+  --badge-primary-text: #CCF381;
+  --badge-primary-border: rgba(204, 243, 129, 0.32);
+  --badge-primary-shadow: 0 0 12px rgba(204, 243, 129, 0.18);
+
+  --badge-accent-bg: rgba(56, 189, 248, 0.12);
+  --badge-accent-text: #38BDF8;
+  --badge-accent-border: rgba(56, 189, 248, 0.30);
+  --badge-accent-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+
+  --badge-success-bg: rgba(52, 211, 153, 0.12);
+  --badge-success-text: #34D399;
+  --badge-success-border: rgba(52, 211, 153, 0.32);
+  --badge-success-shadow: 0 0 12px rgba(52, 211, 153, 0.15);
+
+  --badge-warning-bg: rgba(251, 191, 36, 0.12);
+  --badge-warning-text: #FBBF24;
+  --badge-warning-border: rgba(251, 191, 36, 0.32);
+  --badge-warning-shadow: 0 0 12px rgba(251, 191, 36, 0.15);
+
+  --badge-neutral-bg: rgba(148, 163, 184, 0.10);
+  --badge-neutral-text: #CBD5E1;
+  --badge-neutral-border: rgba(255, 255, 255, 0.12);
+  --badge-neutral-shadow: none;
+
+  --badge-hero-bg: rgba(168, 85, 247, 0.14);
+  --badge-hero-text: #D8B4FE;
+  --badge-hero-border: rgba(168, 85, 247, 0.35);
+  --badge-hero-shadow: 0 0 16px rgba(168, 85, 247, 0.20);
+
+  /* --- Status Beacons --- */
+  --beacon-cyan: #38BDF8;
+  --beacon-emerald: #34D399;
+  --beacon-amber: #FBBF24;
+  --beacon-indigo: #A78BFA;
+
+  /* --- Atmospheric Spectrum Fallbacks --- */
+  --color-cyan: #0EA5E9;
+  --color-indigo: #1E3A8A;
+  --color-teal: #14B8A6;
 
   /* --- Anodized Living Atmospheric Spectrum --- */
   --aurora-1: rgba(204, 243, 129, 0.10);

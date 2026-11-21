@@ -1,5 +1,5 @@
 const BASE_CLASSES =
-  'hireflow-stat-card relative overflow-hidden flex flex-col justify-between gap-[14px] p-[22px] rounded-[16px] bg-[var(--color-card)] border border-[var(--color-border)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[rgba(139,92,246,0.4)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.25)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 before:content-[\'\'] before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-transparent before:transition-all before:duration-300 before:ease-out motion-reduce:before:transition-none'
+  'hireflow-stat-card relative overflow-hidden flex flex-col justify-between gap-[14px] p-[22px] rounded-[16px] bg-[var(--surface-card)] border border-[var(--glass-border)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[var(--color-accent-border)] hover:shadow-[var(--shadow-card-hover)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 before:content-[\'\'] before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-transparent before:transition-all before:duration-300 before:ease-out motion-reduce:before:transition-none'
 
 const ACCENT_CLASSES = {
   primary:
@@ -28,12 +28,12 @@ function StatCard({
     <div className={cardClass} {...rest}>
       <div className="hireflow-stat-card__top flex items-center justify-between gap-[10px]">
         {icon && (
-          <div className="hireflow-stat-card__icon w-10 h-10 grid place-items-center rounded-[10px] bg-[var(--glass-fill)] border border-[var(--glass-border)] text-[18px] text-[var(--color-cyan)] shadow-[0_0_12px_rgba(56,189,248,0.12)]">
+          <div className="hireflow-stat-card__icon w-10 h-10 grid place-items-center rounded-[10px] bg-[var(--glass-fill)] border border-[var(--glass-border)] text-[18px] text-[var(--color-accent)] shadow-[0_0_12px_var(--color-accent-subtle)]">
             {icon}
           </div>
         )}
         {trend && (
-          <span className="hireflow-stat-card__trend py-1 px-2.5 rounded-full text-[11px] font-semibold text-[var(--color-glacial)] bg-[rgba(56,189,248,0.1)] border border-[rgba(56,189,248,0.25)]">
+          <span className="hireflow-stat-card__trend py-1 px-2.5 rounded-full text-[11px] font-semibold text-[var(--color-accent)] bg-[var(--color-accent-subtle)] border border-[var(--color-accent-border)]">
             {trend}
           </span>
         )}

@@ -90,10 +90,15 @@ export function StatusBeacon({
   ...rest
 }) {
   const COLOR_CLASSES = {
-    cyan: 'text-sky-400',
-    emerald: 'text-emerald-400',
-    amber: 'text-amber-400',
-    indigo: 'text-indigo-400',
+    cyan: 'text-[var(--beacon-cyan)]',
+    sky: 'text-[var(--beacon-cyan)]',
+    emerald: 'text-[var(--beacon-emerald)]',
+    success: 'text-[var(--beacon-emerald)]',
+    amber: 'text-[var(--beacon-amber)]',
+    warning: 'text-[var(--beacon-amber)]',
+    indigo: 'text-[var(--beacon-indigo)]',
+    primary: 'text-[var(--beacon-indigo)]',
+    accent: 'text-[var(--beacon-cyan)]',
   }
 
   const colorClass = COLOR_CLASSES[variant] || COLOR_CLASSES.cyan

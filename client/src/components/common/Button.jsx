@@ -1,7 +1,7 @@
 import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 
 const BASE_CLASSES =
-  'hireflow-btn inline-flex items-center justify-center gap-2 font-semibold cursor-pointer whitespace-nowrap select-none transition-all duration-200 ease-out disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#38bdf8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070f] active:scale-[0.97] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100'
+  'hireflow-btn inline-flex items-center justify-center gap-2 font-semibold cursor-pointer whitespace-nowrap select-none transition-all duration-200 ease-out disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100'
 
 const SIZE_CLASSES = {
   sm: 'hireflow-btn--sm py-2 px-3.5 text-xs rounded-full',
@@ -10,27 +10,27 @@ const SIZE_CLASSES = {
 }
 
 const VARIANT_CLASSES = {
-  // Tier 1: Glacial Border-Beam Hero Pill
-  beam: 'btn-border-beam text-white font-bold tracking-[-0.01em]',
-  'border-beam': 'btn-border-beam text-white font-bold tracking-[-0.01em]',
+  // Tier 1: Border-Beam Hero Pill
+  beam: 'btn-border-beam text-[var(--text-primary)] font-bold tracking-[-0.01em]',
+  'border-beam': 'btn-border-beam text-[var(--text-primary)] font-bold tracking-[-0.01em]',
 
-  // Tier 2: Solid Luminous Glacial CTA
+  // Tier 2: Solid Luminous CTA
   primary:
-    'hireflow-btn--primary btn-luminous-cta text-[#050811] font-extrabold shadow-[0_8px_25px_rgba(56,189,248,0.32)] border border-white/35 hover:-translate-y-[2px] hover:shadow-[0_12px_34px_rgba(56,189,248,0.48)]',
+    'hireflow-btn--primary btn-luminous-cta text-[var(--color-accent-ink)] font-extrabold shadow-[var(--shadow-accent)] border border-[var(--color-accent-border)] hover:-translate-y-[2px] hover:shadow-[0_12px_34px_var(--color-accent-border)]',
   luminous:
-    'hireflow-btn--primary btn-luminous-cta text-[#050811] font-extrabold shadow-[0_8px_25px_rgba(56,189,248,0.32)] border border-white/35 hover:-translate-y-[2px] hover:shadow-[0_12px_34px_rgba(56,189,248,0.48)]',
+    'hireflow-btn--primary btn-luminous-cta text-[var(--color-accent-ink)] font-extrabold shadow-[var(--shadow-accent)] border border-[var(--color-accent-border)] hover:-translate-y-[2px] hover:shadow-[0_12px_34px_var(--color-accent-border)]',
 
-  // Tier 3: Dark Glass Spotlight Secondary Pill
+  // Tier 3: Glass Spotlight Secondary Pill
   secondary:
-    'btn-secondary-pill hireflow-btn--secondary text-[#f8fafc] border border-white/15 backdrop-blur-[14px] hover:border-cyan-400/45 hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.35)]',
+    'btn-secondary-pill hireflow-btn--secondary text-[var(--text-primary)] border border-[var(--glass-border)] backdrop-blur-[14px] hover:border-[var(--color-accent-border)] hover:-translate-y-[2px] hover:shadow-[var(--shadow-glass)]',
   spotlight:
-    'btn-secondary-pill hireflow-btn--secondary text-[#f8fafc] border border-white/15 backdrop-blur-[14px] hover:border-cyan-400/45 hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.35)]',
+    'btn-secondary-pill hireflow-btn--secondary text-[var(--text-primary)] border border-[var(--glass-border)] backdrop-blur-[14px] hover:border-[var(--color-accent-border)] hover:-translate-y-[2px] hover:shadow-[var(--shadow-glass)]',
 
   // Backward-compatible Utility Variants
   outline:
-    'hireflow-btn--outline bg-cyan-500/[0.08] text-cyan-300 border border-cyan-400/35 backdrop-blur-[8px] hover:bg-cyan-500/[0.18] hover:border-cyan-400/60 hover:text-white hover:-translate-y-[2px] hover:shadow-[0_8px_25px_rgba(56,189,248,0.2)]',
+    'hireflow-btn--outline bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent-border)] backdrop-blur-[8px] hover:bg-[var(--color-accent)] hover:text-[var(--color-accent-ink)] hover:border-[var(--color-accent)] hover:-translate-y-[2px] hover:shadow-[var(--shadow-accent)]',
   ghost:
-    'hireflow-btn--ghost bg-transparent text-slate-300 hover:text-white hover:bg-white/[0.06]',
+    'hireflow-btn--ghost bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-accent-subtle)]',
 }
 
 /**

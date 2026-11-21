@@ -9,19 +9,19 @@ const SIZE_CLASSES = {
 
 const VARIANT_CLASSES = {
   primary:
-    'hireflow-badge--primary bg-sky-500/10 text-sky-300 border-sky-400/30 shadow-[0_0_12px_rgba(56,189,248,0.08)]',
+    'hireflow-badge--primary bg-[var(--badge-primary-bg)] text-[var(--badge-primary-text)] border-[var(--badge-primary-border)] shadow-[var(--badge-primary-shadow)]',
   accent:
-    'hireflow-badge--accent bg-cyan-500/10 text-cyan-300 border-cyan-400/35 shadow-[0_0_12px_rgba(34,211,238,0.08)]',
+    'hireflow-badge--accent bg-[var(--badge-accent-bg)] text-[var(--badge-accent-text)] border-[var(--badge-accent-border)] shadow-[var(--badge-accent-shadow)]',
   success:
-    'hireflow-badge--success bg-emerald-500/12 text-emerald-300 border-emerald-400/35 shadow-[0_0_12px_rgba(52,211,153,0.08)]',
+    'hireflow-badge--success bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--badge-success-border)] shadow-[var(--badge-success-shadow)]',
   warning:
-    'hireflow-badge--warning bg-amber-500/12 text-amber-300 border-amber-400/35 shadow-[0_0_12px_rgba(251,191,36,0.08)]',
+    'hireflow-badge--warning bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)] border-[var(--badge-warning-border)] shadow-[var(--badge-warning-shadow)]',
   neutral:
-    'hireflow-badge--neutral bg-slate-500/10 text-slate-300 border-white/12',
+    'hireflow-badge--neutral bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-text)] border-[var(--badge-neutral-border)] shadow-[var(--badge-neutral-shadow)]',
   hero:
-    'hireflow-badge--hero bg-violet-500/12 text-violet-200 border-violet-400/30 py-2 px-4 text-[13px] shadow-[0_0_16px_rgba(139,92,246,0.12)]',
+    'hireflow-badge--hero bg-[var(--badge-hero-bg)] text-[var(--badge-hero-text)] border-[var(--badge-hero-border)] py-2 px-4 text-[13px] shadow-[var(--badge-hero-shadow)]',
   gradient:
-    'hireflow-badge--gradient bg-gradient-to-r from-sky-400 to-indigo-500 text-white border-transparent shadow-[0_4px_14px_rgba(56,189,248,0.25)]',
+    'hireflow-badge--gradient bg-[image:var(--gradient-primary)] text-[var(--color-accent-ink)] border-transparent shadow-[var(--shadow-accent)]',
 }
 
 function Badge({
