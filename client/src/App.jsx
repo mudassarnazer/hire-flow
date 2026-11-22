@@ -16,7 +16,7 @@ function App() {
       {activeView === 'landing' ? (
         <LandingPage onViewChange={setActiveView} />
       ) : (
-        <StudentDashboard />
+        <StudentDashboard onViewChange={setActiveView} />
       )}
     </>
   );
