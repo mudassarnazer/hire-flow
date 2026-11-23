@@ -38,17 +38,17 @@ export default function DashboardSettingsView() {
       <div className="view-header-bar mb-6 pb-5 border-b border-[var(--glass-border)] flex items-center justify-between flex-wrap gap-4">
         <div>
           <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[var(--color-accent)] font-mono block mb-1">
-            PORTAL CONFIGURATION
+            PORTAL CONFIGURATION (DEMO)
           </span>
           <h2 id="settings-heading" className="text-2xl font-extrabold text-[var(--text-primary)] tracking-[-0.02em]">
             Settings & Preferences
           </h2>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Manage appearance themes, notification schedules, and privacy controls.
+            Manage appearance themes, simulated notification preferences, and privacy controls.
           </p>
         </div>
 
-        <Badge variant="accent" size="sm">Persistent Preferences</Badge>
+        <Badge variant="neutral" size="sm">Local Demonstration Settings</Badge>
       </div>
 
       <div className="space-y-6 max-w-4xl">
@@ -57,7 +57,7 @@ export default function DashboardSettingsView() {
           <div className="mb-4">
             <h3 className="text-base font-bold text-[var(--text-primary)]">Interface Theme Mode</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Choose your preferred visual environment. Both themes are calibrated with strict WCAG AA contrast.
+              Choose your preferred visual environment between Anodized Dark and Iridescent Chrome. Theme preference is saved in local browser storage.
             </p>
           </div>
 
@@ -65,7 +65,7 @@ export default function DashboardSettingsView() {
             {/* Dark Theme Option */}
             <button
               type="button"
-              className={`p-4 rounded-xl border text-left cursor-pointer transition-all ${
+              className={`p-4 rounded-xl border text-left cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                 theme === 'dark'
                   ? 'bg-[var(--surface-card-hover)] border-[var(--color-accent)] shadow-[0_0_20px_var(--color-accent-subtle)]'
                   : 'bg-[var(--surface-glass)] border-[var(--glass-border)] hover:border-[var(--color-accent-border)]'
@@ -86,7 +86,7 @@ export default function DashboardSettingsView() {
             {/* Light Theme Option */}
             <button
               type="button"
-              className={`p-4 rounded-xl border text-left cursor-pointer transition-all ${
+              className={`p-4 rounded-xl border text-left cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                 theme === 'light'
                   ? 'bg-[var(--surface-card-hover)] border-[var(--color-accent)] shadow-[0_0_20px_var(--color-accent-subtle)]'
                   : 'bg-[var(--surface-glass)] border-[var(--glass-border)] hover:border-[var(--color-accent-border)]'
@@ -109,74 +109,118 @@ export default function DashboardSettingsView() {
         {/* Notification Preferences */}
         <SpotlightCard className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--glass-border)]">
           <div className="mb-4">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">Placement Notifications</h3>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="text-base font-bold text-[var(--text-primary)]">Demonstration Notification Controls</h3>
+              <Badge variant="neutral" size="sm">Local State Only</Badge>
+            </div>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Control when and how you receive alerts regarding interview invitations and application changes.
+              Toggle simulated notification preferences. Note: External email delivery and SMS gateways are not implemented in this prototype.
             </p>
           </div>
 
           <div className="divide-y divide-[var(--glass-border)] text-xs">
-            <div className="py-3.5 flex items-center justify-between">
+            {/* Interview Email */}
+            <div className="py-3.5 flex items-center justify-between gap-4">
               <div>
                 <strong className="block text-[var(--text-primary)] font-semibold">Interview Round Reminders</strong>
-                <span className="text-[var(--text-secondary)]">Receive email alerts 24 hours and 1 hour before scheduled rounds.</span>
+                <span className="text-[var(--text-secondary)]">
+                  Simulated email alerts before scheduled rounds (email delivery service is not implemented).
+                </span>
               </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={notifications.interviewEmail}
+                aria-label="Toggle interview round email reminders"
                 onClick={() => toggleNotif('interviewEmail')}
-                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                   notifications.interviewEmail ? 'bg-[var(--color-accent)]' : 'bg-[var(--surface-glass)] border border-[var(--glass-border)]'
                 }`}
               >
                 <span
-                  className={`block w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                    notifications.interviewEmail ? 'right-1' : 'left-1'
+                  className={`block w-4 h-4 rounded-full transition-transform absolute top-1 ${
+                    notifications.interviewEmail ? 'right-1 bg-white' : 'left-1 bg-[var(--text-secondary)]'
                   }`}
                 />
               </button>
             </div>
 
-            <div className="py-3.5 flex items-center justify-between">
+            {/* Stage Updates */}
+            <div className="py-3.5 flex items-center justify-between gap-4">
               <div>
                 <strong className="block text-[var(--text-primary)] font-semibold">Application Stage Updates</strong>
-                <span className="text-[var(--text-secondary)]">Instant notifications when your status shifts to Shortlisted or Interview.</span>
+                <span className="text-[var(--text-secondary)]">
+                  Simulated notifications for application progress changes (push alert service is not connected).
+                </span>
               </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={notifications.stageUpdates}
+                aria-label="Toggle application stage updates"
                 onClick={() => toggleNotif('stageUpdates')}
-                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                   notifications.stageUpdates ? 'bg-[var(--color-accent)]' : 'bg-[var(--surface-glass)] border border-[var(--glass-border)]'
                 }`}
               >
                 <span
-                  className={`block w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                    notifications.stageUpdates ? 'right-1' : 'left-1'
+                  className={`block w-4 h-4 rounded-full transition-transform absolute top-1 ${
+                    notifications.stageUpdates ? 'right-1 bg-white' : 'left-1 bg-[var(--text-secondary)]'
                   }`}
                 />
               </button>
             </div>
 
-            <div className="py-3.5 flex items-center justify-between">
+            {/* New Drives */}
+            <div className="py-3.5 flex items-center justify-between gap-4">
               <div>
-                <strong className="block text-[var(--text-primary)] font-semibold">New Corporate Placement Drives</strong>
-                <span className="text-[var(--text-secondary)]">Alerts when new hiring partners open applications for your batch.</span>
+                <strong className="block text-[var(--text-primary)] font-semibold">New Placement Drives</strong>
+                <span className="text-[var(--text-secondary)]">
+                  Simulated alerts when new sample drives are added to the prototype catalog.
+                </span>
               </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={notifications.newDrives}
+                aria-label="Toggle new placement drives alerts"
                 onClick={() => toggleNotif('newDrives')}
-                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                   notifications.newDrives ? 'bg-[var(--color-accent)]' : 'bg-[var(--surface-glass)] border border-[var(--glass-border)]'
                 }`}
               >
                 <span
-                  className={`block w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                    notifications.newDrives ? 'right-1' : 'left-1'
+                  className={`block w-4 h-4 rounded-full transition-transform absolute top-1 ${
+                    notifications.newDrives ? 'right-1 bg-white' : 'left-1 bg-[var(--text-secondary)]'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* SMS Alerts */}
+            <div className="py-3.5 flex items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <strong className="block text-[var(--text-primary)] font-semibold">SMS Urgent Alerts</strong>
+                  <Badge variant="neutral" size="sm">Simulated</Badge>
+                </div>
+                <span className="text-[var(--text-secondary)]">
+                  Simulated SMS notifications for urgent schedule changes (SMS gateway is not connected).
+                </span>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={notifications.smsAlerts}
+                aria-label="Toggle SMS urgent alerts (demonstration only)"
+                onClick={() => toggleNotif('smsAlerts')}
+                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
+                  notifications.smsAlerts ? 'bg-[var(--color-accent)]' : 'bg-[var(--surface-glass)] border border-[var(--glass-border)]'
+                }`}
+              >
+                <span
+                  className={`block w-4 h-4 rounded-full transition-transform absolute top-1 ${
+                    notifications.smsAlerts ? 'right-1 bg-white' : 'left-1 bg-[var(--text-secondary)]'
                   }`}
                 />
               </button>
@@ -187,52 +231,61 @@ export default function DashboardSettingsView() {
         {/* Privacy & Benchmark */}
         <SpotlightCard className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--glass-border)]">
           <div className="mb-4">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">Privacy & Recruiter Visibility</h3>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="text-base font-bold text-[var(--text-primary)]">Privacy & Recruiter Visibility (Demo Controls)</h3>
+              <Badge variant="neutral" size="sm">Local State Only</Badge>
+            </div>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Manage data sharing permissions with verified corporate recruiters.
+              Simulated privacy preferences. Live corporate recruiter indexing and external benchmark databases are not connected.
             </p>
           </div>
 
           <div className="divide-y divide-[var(--glass-border)] text-xs">
-            <div className="py-3.5 flex items-center justify-between">
+            <div className="py-3.5 flex items-center justify-between gap-4">
               <div>
                 <strong className="block text-[var(--text-primary)] font-semibold">Corporate Recruiter Discoverability</strong>
-                <span className="text-[var(--text-secondary)]">Allow hiring partners to discover your profile based on verified skill tags.</span>
+                <span className="text-[var(--text-secondary)]">
+                  Simulated permission to index candidate skills (recruiter discovery search engine is not implemented).
+                </span>
               </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={privacy.recruiterDiscoverable}
+                aria-label="Toggle corporate recruiter discoverability"
                 onClick={() => togglePrivacy('recruiterDiscoverable')}
-                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                   privacy.recruiterDiscoverable ? 'bg-[var(--color-accent)]' : 'bg-[var(--surface-glass)] border border-[var(--glass-border)]'
                 }`}
               >
                 <span
-                  className={`block w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                    privacy.recruiterDiscoverable ? 'right-1' : 'left-1'
+                  className={`block w-4 h-4 rounded-full transition-transform absolute top-1 ${
+                    privacy.recruiterDiscoverable ? 'right-1 bg-white' : 'left-1 bg-[var(--text-secondary)]'
                   }`}
                 />
               </button>
             </div>
 
-            <div className="py-3.5 flex items-center justify-between">
+            <div className="py-3.5 flex items-center justify-between gap-4">
               <div>
                 <strong className="block text-[var(--text-primary)] font-semibold">Anonymous Peer Benchmarking</strong>
-                <span className="text-[var(--text-secondary)]">Contribute anonymized CGPA and ATS score statistics to placement cohort analytics.</span>
+                <span className="text-[var(--text-secondary)]">
+                  Simulated data contribution to placement statistics (cohort analytics service is not connected).
+                </span>
               </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={privacy.peerBenchmarking}
+                aria-label="Toggle anonymous peer benchmarking"
                 onClick={() => togglePrivacy('peerBenchmarking')}
-                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+                className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] ${
                   privacy.peerBenchmarking ? 'bg-[var(--color-accent)]' : 'bg-[var(--surface-glass)] border border-[var(--glass-border)]'
                 }`}
               >
                 <span
-                  className={`block w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                    privacy.peerBenchmarking ? 'right-1' : 'left-1'
+                  className={`block w-4 h-4 rounded-full transition-transform absolute top-1 ${
+                    privacy.peerBenchmarking ? 'right-1 bg-white' : 'left-1 bg-[var(--text-secondary)]'
                   }`}
                 />
               </button>
@@ -241,11 +294,13 @@ export default function DashboardSettingsView() {
         </SpotlightCard>
 
         {/* Prototype Technical Disclosure Notice */}
-        <div className="p-4 rounded-2xl bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs text-[var(--text-muted)] space-y-1">
+        <div className="p-4 rounded-2xl bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs text-[var(--text-muted)] space-y-1.5">
           <strong className="text-[var(--text-primary)] block">Stage G3 Architecture Disclosure</strong>
           <p>
-            Preferences modified in this view are maintained in persistent client-side application memory.
-            In production deployments, settings synchronize via institutional student identity services.
+            Notification preferences, privacy toggles, and profile updates modify local React demonstration state only and do not persist across browser reloads. Theme selection is saved to your browser&apos;s local storage via ThemeContext.
+          </p>
+          <p>
+            External integrations — including email notifications, SMS delivery gateways, recruiter search visibility, and institutional academic record synchronization — are not connected in this prototype release.
           </p>
         </div>
       </div>
