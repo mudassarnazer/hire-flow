@@ -1,6 +1,6 @@
 /**
  * StudentProfileView Component
- * Comprehensive Student Academic Identity, Verified Skills, Completion Meter & ATS Score
+ * Candidate Academic Identity, Skills Profile, Dynamic Completion Meter & Simulated ATS Score
  * Developer Attribution: MUDASSAR NAZER
  */
 
@@ -9,63 +9,172 @@ import { createPortal } from 'react-dom'
 import Badge from '../common/Badge'
 import Button from '../common/Button'
 import SpotlightCard from '../glass/SpotlightCard'
+import { calculateProfileCompletion } from './profileUtils'
 
-export default function StudentProfileView({ profile }) {
+export default function StudentProfileView({ profile, onUpdateProfile }) {
+  const safeProfile = profile || {
+    name: 'Sample Candidate',
+    avatarInitials: 'SC',
+    rollNumber: 'DEMO-2027-CS',
+    department: 'Computer Science & Engineering',
+    institution: 'Sample Technical Institute (Demo)',
+    batch: 'Class of 2027 (Sample)',
+    cgpa: '8.94 / 10.0 (Sample)',
+    eligibilityStatus: 'Standard Placement Track (Sample)',
+    resumeScore: 92,
+    skills: ['React', 'JavaScript', 'Node.js', 'Python', 'SQL', 'Algorithms'],
+    bio: 'Demonstration candidate profile for HIRE-FLOW evaluation. Focusing on full-stack web engineering and distributed systems.',
+    portfolioLink: 'https://example.com/candidate-portfolio-demo',
+  }
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [studentBio, setStudentBio] = useState(
-    'Final-year Computer Science undergraduate at NIT focusing on distributed systems and full-stack web engineering. Seeking 2027 software engineering internship and full-time roles.'
+    safeProfile.bio ||
+      'Demonstration candidate profile for HIRE-FLOW evaluation. Focusing on full-stack web engineering and distributed systems.'
   )
-  const [portfolioLink, setPortfolioLink] = useState('https://github.com/priyasharma')
+  const [portfolioLink, setPortfolioLink] = useState(
+    safeProfile.portfolioLink || 'https://example.com/candidate-portfolio-demo'
+  )
+  const [formError, setFormError] = useState('')
   const [saveToast, setSaveToast] = useState(false)
 
   const editModalRef = useRef(null)
   const closeBtnRef = useRef(null)
+  const lastActiveElementRef = useRef(null)
 
-  // SVG Circular Gauge calculation for ATS resume score (92)
-  const resumeScore = profile?.resumeScore || 92
+  // SVG Circular Gauge calculation for simulated ATS resume score
+  const resumeScore =
+    typeof safeProfile.resumeScore === 'number' && Number.isFinite(safeProfile.resumeScore)
+      ? Math.min(Math.max(safeProfile.resumeScore, 0), 100)
+      : 0
   const radius = 42
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (circumference * resumeScore) / 100
 
-  // Focus management and Escape key handling
+  // Calculate profile completion dynamically from actual profile fields
+  const currentProfileData = {
+    ...safeProfile,
+    bio: studentBio,
+    portfolioLink: portfolioLink,
+  }
+  const { percentage: completionPercentage, items: completionItems } =
+    calculateProfileCompletion(currentProfileData)
+
+  const handleOpenEditModal = () => {
+    lastActiveElementRef.current = document.activeElement
+    setFormError('')
+    setIsEditModalOpen(true)
+  }
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false)
+    setFormError('')
+  }
+
+  // Focus management, Escape key handling, and background scroll locking
   useEffect(() => {
     if (!isEditModalOpen) return
 
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setIsEditModalOpen(false)
+      // Escape (both "Escape" and legacy "Esc") closes the edit modal – required for accessibility
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        e.preventDefault()
+        handleCloseEditModal()
+        return
+      }
+
+      if (e.key === 'Tab') {
+        const modal = editModalRef.current
+        if (!modal) return
+
+        const focusable = Array.from(
+          modal.querySelectorAll(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        )
+
+        if (focusable.length === 0) {
+          e.preventDefault()
+          return
+        }
+
+        const firstElement = focusable[0]
+        const lastElement = focusable[focusable.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !modal.contains(document.activeElement)) {
+            e.preventDefault()
+            lastElement.focus()
+          }
+        } else {
+          if (document.activeElement === lastElement || !modal.contains(document.activeElement)) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
       }
     }
 
-    const originalOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', handleKeyDown)
-    closeBtnRef.current?.focus()
+
+    const focusTimer = setTimeout(() => {
+      closeBtnRef.current?.focus()
+    }, 15)
 
     return () => {
+      clearTimeout(focusTimer)
       document.body.style.overflow = originalOverflow
       window.removeEventListener('keydown', handleKeyDown)
+
+      // Restore focus to opener element
+      if (
+        lastActiveElementRef.current &&
+        typeof lastActiveElementRef.current.focus === 'function'
+      ) {
+        lastActiveElementRef.current.focus()
+      }
     }
   }, [isEditModalOpen])
 
   const handleSaveProfile = (e) => {
     e.preventDefault()
-    setIsEditModalOpen(false)
+    setFormError('')
+
+    const trimmedBio = studentBio.trim()
+    const trimmedPortfolio = portfolioLink.trim()
+
+    if (trimmedBio.length < 10) {
+      setFormError('Candidate bio must be at least 10 characters in length.')
+      return
+    }
+
+    if (!/^https?:\/\//i.test(trimmedPortfolio)) {
+      setFormError('Portfolio URL must start with http:// or https://.')
+      return
+    }
+
+    onUpdateProfile?.({
+      bio: trimmedBio,
+      portfolioLink: trimmedPortfolio,
+    })
+
+    handleCloseEditModal()
     setSaveToast(true)
     setTimeout(() => setSaveToast(false), 3500)
   }
-
-  if (!profile) return null
 
   return (
     <section className="student-profile-view" aria-labelledby="profile-view-heading">
       {/* Toast Alert */}
       {saveToast && (
         <div
-          className="fixed bottom-6 right-6 z-50 bg-[var(--surface-card)] border border-emerald-400/40 text-emerald-400 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-bounce"
+          className="fixed bottom-6 right-6 z-50 bg-[var(--surface-card)] border border-emerald-400/40 text-emerald-400 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-semibold"
           role="status"
         >
-          <span aria-hidden="true">✓</span> Profile bio & portfolio updated (Demonstration State).
+          <span aria-hidden="true">✓</span> Profile bio & portfolio updated in local demonstration state.
         </div>
       )}
 
@@ -73,20 +182,20 @@ export default function StudentProfileView({ profile }) {
       <div className="view-header-bar mb-6 pb-5 border-b border-[var(--glass-border)] flex items-center justify-between flex-wrap gap-4">
         <div>
           <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[var(--color-accent)] font-mono block mb-1">
-            INSTITUTIONAL RECORD & VERIFICATION
+            STUDENT CANDIDATE PROFILE (DEMO)
           </span>
           <h2 id="profile-view-heading" className="text-2xl font-extrabold text-[var(--text-primary)] tracking-[-0.02em]">
             Student Profile Summary
           </h2>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Verified academic credentials, technical skills index, and placement readiness score.
+            Academic profile summary, candidate technical proficiencies, and simulated ATS readiness score.
           </p>
         </div>
 
         <Button
           variant="secondary"
           size="sm"
-          onClick={() => setIsEditModalOpen(true)}
+          onClick={handleOpenEditModal}
           aria-label="Edit student profile information"
         >
           <span>Edit Profile Bio</span>
@@ -101,18 +210,18 @@ export default function StudentProfileView({ profile }) {
             <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--color-accent)] to-[#4338CA] text-white flex items-center justify-center text-2xl font-extrabold shadow-[var(--shadow-accent)] border border-white/20">
-                  {profile.avatarInitials}
+                  {safeProfile.avatarInitials || 'SC'}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[var(--text-primary)]">{profile.name}</h3>
+                  <h3 className="text-xl font-bold text-[var(--text-primary)]">{safeProfile.name}</h3>
                   <p className="text-xs text-[var(--text-secondary)]">
-                    Roll No: <span className="font-mono text-[var(--text-primary)]">{profile.rollNumber}</span> • {profile.batch}
+                    Roll No: <span className="font-mono text-[var(--text-primary)]">{safeProfile.rollNumber || 'DEMO-2027'}</span> • {safeProfile.batch}
                   </p>
                   <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="success" dot size="sm">
-                      {profile.eligibilityStatus}
+                    <Badge variant="neutral" dot size="sm">
+                      {safeProfile.eligibilityStatus}
                     </Badge>
-                    <Badge variant="neutral" size="sm">Verified Academic Record</Badge>
+                    <Badge variant="neutral" size="sm">Demonstration Record</Badge>
                   </div>
                 </div>
               </div>
@@ -121,19 +230,19 @@ export default function StudentProfileView({ profile }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs mb-6">
               <div>
                 <span className="text-[var(--text-muted)] block mb-0.5">Academic Department</span>
-                <strong className="text-[var(--text-primary)] font-semibold">{profile.department}</strong>
+                <strong className="text-[var(--text-primary)] font-semibold">{safeProfile.department}</strong>
               </div>
               <div>
                 <span className="text-[var(--text-muted)] block mb-0.5">Institution</span>
-                <strong className="text-[var(--text-primary)] font-semibold">{profile.institution}</strong>
+                <strong className="text-[var(--text-primary)] font-semibold">{safeProfile.institution}</strong>
               </div>
               <div>
                 <span className="text-[var(--text-muted)] block mb-0.5">Cumulative GPA</span>
-                <strong className="text-[var(--color-accent)] font-mono text-sm font-bold">{profile.cgpa}</strong>
+                <strong className="text-[var(--color-accent)] font-mono text-sm font-bold">{safeProfile.cgpa}</strong>
               </div>
               <div>
-                <span className="text-[var(--text-muted)] block mb-0.5">Recruitment Eligibility</span>
-                <strong className="text-emerald-400 font-semibold">Tier-1 Cleared (Zero Backlogs)</strong>
+                <span className="text-[var(--text-muted)] block mb-0.5">Placement Eligibility Track</span>
+                <strong className="text-[var(--color-accent)] font-semibold">{safeProfile.eligibilityStatus}</strong>
               </div>
             </div>
 
@@ -146,8 +255,8 @@ export default function StudentProfileView({ profile }) {
               </p>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
-              <span className="text-[var(--text-muted)]">Public Portfolio:</span>
+            <div className="mt-4 pt-4 border-t border-[var(--glass-border)] flex items-center justify-between text-xs flex-wrap gap-2">
+              <span className="text-[var(--text-muted)]">Public Portfolio (Sample):</span>
               <a
                 href={portfolioLink}
                 target="_blank"
@@ -163,17 +272,17 @@ export default function StudentProfileView({ profile }) {
           <SpotlightCard className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--glass-border)]">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider">
-                Verified Technical Proficiencies
+                Technical Proficiencies (Self-Reported Sample)
               </h4>
-              <Badge variant="primary" size="sm">{profile.skills.length} Indexed</Badge>
+              <Badge variant="primary" size="sm">{safeProfile.skills?.length || 0} Listed</Badge>
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] mb-4">
-              Skills verified via campus coding evaluations and academic coursework.
+              Technical proficiencies listed for prototype demonstration purposes.
             </p>
 
             <div className="flex flex-wrap gap-2">
-              {profile.skills.map((skill) => (
+              {(safeProfile.skills || []).map((skill) => (
                 <span
                   key={skill}
                   className="px-3 py-1.5 rounded-lg bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs font-medium text-[var(--text-primary)] flex items-center gap-1.5"
@@ -182,62 +291,66 @@ export default function StudentProfileView({ profile }) {
                   {skill}
                 </span>
               ))}
-              <span className="px-3 py-1.5 rounded-lg bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs font-medium text-[var(--text-primary)] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Data Structures
-              </span>
-              <span className="px-3 py-1.5 rounded-lg bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs font-medium text-[var(--text-primary)] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                System Design
-              </span>
             </div>
           </SpotlightCard>
         </div>
 
-        {/* Right Column: Profile Completion & ATS Score Gauge */}
+        {/* Right Column: Dynamic Profile Completion & Simulated ATS Score */}
         <div className="space-y-6">
-          {/* Profile Completion Checklist */}
+          {/* Profile Completion Checklist (Calculated Dynamically) */}
           <SpotlightCard className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--glass-border)]">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-bold text-[var(--text-primary)]">Profile Completion</h4>
-              <span className="text-sm font-mono font-bold text-[var(--color-accent)]">85%</span>
+              <span className="text-sm font-mono font-bold text-[var(--color-accent)]">
+                {completionPercentage}%
+              </span>
             </div>
 
-            <div className="w-full h-2 bg-[var(--surface-glass)] rounded-full overflow-hidden border border-[var(--glass-border)] mb-4">
-              <div className="h-full bg-[var(--gradient-primary)] rounded-full" style={{ width: '85%' }} />
+            <div
+              className="w-full h-2 bg-[var(--surface-glass)] rounded-full overflow-hidden border border-[var(--glass-border)] mb-4"
+              role="progressbar"
+              aria-valuenow={completionPercentage}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-label="Profile completion percentage"
+            >
+              <div
+                className="h-full bg-[var(--gradient-primary)] rounded-full transition-all duration-300"
+                style={{ width: `${completionPercentage}%` }}
+              />
             </div>
 
             <ul className="space-y-2.5 text-xs text-[var(--text-secondary)]">
-              <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-bold">✓</span>
-                <span>Academic Record & CGPA Indexed</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-bold">✓</span>
-                <span>Placement Tier Eligibility Confirmed</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-bold">✓</span>
-                <span>Primary Technical Skills (6) Verified</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-emerald-400 font-bold">✓</span>
-                <span>Standard Placement Resume Uploaded</span>
-              </li>
-              <li className="flex items-center gap-2 text-[var(--text-muted)]">
-                <span className="text-amber-400 font-bold">○</span>
-                <span>Personal GitHub/Portfolio Link Added</span>
-              </li>
+              {completionItems.map((item) => (
+                <li key={item.id} className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={item.isComplete ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}
+                      aria-hidden="true"
+                    >
+                      {item.isComplete ? '✓' : '○'}
+                    </span>
+                    <span className={item.isComplete ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}>
+                      {item.label}
+                    </span>
+                  </div>
+                  {item.detail && (
+                    <span className="font-mono text-[10px] text-[var(--text-muted)]">
+                      {item.detail}
+                    </span>
+                  )}
+                </li>
+              ))}
             </ul>
           </SpotlightCard>
 
-          {/* AI ATS & Readiness Meter */}
+          {/* AI ATS & Readiness Meter (Simulated) */}
           <SpotlightCard className="p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--glass-border)] text-center">
             <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[var(--color-accent)] font-mono block mb-1">
-              AI PLACEMENT EVALUATION
+              AI ATS EVALUATION (SIMULATED)
             </span>
             <h4 className="text-base font-bold text-[var(--text-primary)] mb-4">
-              ATS Readiness Score
+              ATS Readiness Score (Simulated)
             </h4>
 
             <div className="relative w-28 h-28 mx-auto flex items-center justify-center mb-4">
@@ -272,7 +385,7 @@ export default function StudentProfileView({ profile }) {
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              Your resume format and keyword density rank in the top quartile of the Class of 2027 cohort.
+              Illustrative ATS score based on sample resume keyword density. Cohort comparison is not connected to a live benchmark database.
             </p>
           </SpotlightCard>
         </div>
@@ -283,7 +396,7 @@ export default function StudentProfileView({ profile }) {
         createPortal(
           <div
             className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={() => setIsEditModalOpen(false)}
+            onClick={handleCloseEditModal}
             role="presentation"
           >
             <div
@@ -295,14 +408,19 @@ export default function StudentProfileView({ profile }) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between pb-4 mb-4 border-b border-[var(--glass-border)]">
-                <h3 id="edit-profile-title" className="text-lg font-bold text-[var(--text-primary)]">
-                  Edit Candidate Profile
-                </h3>
+                <div>
+                  <h3 id="edit-profile-title" className="text-lg font-bold text-[var(--text-primary)]">
+                    Edit Candidate Profile (Local Demonstration)
+                  </h3>
+                  <span className="text-[11px] text-[var(--text-muted)] block">
+                    Modifies local prototype state only
+                  </span>
+                </div>
                 <button
                   ref={closeBtnRef}
                   type="button"
                   className="w-8 h-8 rounded-lg bg-[var(--surface-glass)] border border-[var(--glass-border)] flex items-center justify-center text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
-                  onClick={() => setIsEditModalOpen(false)}
+                  onClick={handleCloseEditModal}
                   aria-label="Close profile editor modal"
                 >
                   ✕
@@ -310,6 +428,15 @@ export default function StudentProfileView({ profile }) {
               </div>
 
               <form onSubmit={handleSaveProfile} className="space-y-4">
+                {formError && (
+                  <div
+                    className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-medium"
+                    role="alert"
+                  >
+                    {formError}
+                  </div>
+                )}
+
                 <div>
                   <label htmlFor="bio-input" className="block text-xs font-semibold text-[var(--text-muted)] mb-1 uppercase tracking-wider">
                     Profile Bio / Summary
@@ -339,7 +466,7 @@ export default function StudentProfileView({ profile }) {
                 </div>
 
                 <div className="p-3 rounded-xl bg-[var(--surface-glass)] border border-[var(--glass-border)] text-xs text-[var(--text-muted)]">
-                  <span className="text-[var(--color-accent)] font-semibold">Note:</span> Academic records (CGPA, Coursework, Roll Number) are managed by institutional registrar records and cannot be edited in client demonstration mode.
+                  <span className="text-[var(--color-accent)] font-semibold">Notice:</span> Profile updates modify local demonstration state only. No data is stored on a server or transmitted to an external service.
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--glass-border)]">
@@ -347,7 +474,7 @@ export default function StudentProfileView({ profile }) {
                     variant="outline"
                     size="sm"
                     type="button"
-                    onClick={() => setIsEditModalOpen(false)}
+                    onClick={handleCloseEditModal}
                   >
                     Cancel
                   </Button>
@@ -356,7 +483,7 @@ export default function StudentProfileView({ profile }) {
                     size="sm"
                     type="submit"
                   >
-                    Save Changes
+                    Save Changes (Demo)
                   </Button>
                 </div>
               </form>

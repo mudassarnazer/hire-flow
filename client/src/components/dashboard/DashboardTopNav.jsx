@@ -13,6 +13,7 @@ export default function DashboardTopNav({
   activeTabLabel = 'Overview',
   searchQuery = '',
   onSearchChange,
+  isSidebarOpen = false,
   onOpenSidebar,
   onSelectTab,
   profile,
@@ -22,7 +23,7 @@ export default function DashboardTopNav({
   const [isNotifOpen, setIsNotifOpen] = useState(false)
   const notifRef = useRef(null)
 
-  // Close notifications popover on click outside
+  // Close notifications popover on click outside or Escape
   useEffect(() => {
     if (!isNotifOpen) return
 
@@ -32,9 +33,25 @@ export default function DashboardTopNav({
       }
     }
 
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsNotifOpen(false)
+      }
+    }
+
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [isNotifOpen])
+
+  const safeProfile = profile || {
+    name: 'Sample Candidate',
+    avatarInitials: 'SC',
+    eligibilityStatus: 'Standard Placement Track (Sample)',
+  }
 
   return (
     <header className="dashboard-topnav" aria-label="Dashboard Top Navigation">
@@ -44,8 +61,9 @@ export default function DashboardTopNav({
           type="button"
           className="dashboard-topnav__menu-trigger"
           onClick={onOpenSidebar}
-          aria-label="Open dashboard navigation menu"
-          aria-expanded="false"
+          aria-label={isSidebarOpen ? 'Close dashboard navigation menu' : 'Open dashboard navigation menu'}
+          aria-expanded={Boolean(isSidebarOpen)}
+          aria-controls="dashboard-sidebar"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="3" y1="12" x2="21" y2="12" />
@@ -125,7 +143,7 @@ export default function DashboardTopNav({
             <div className="notif-dropdown" role="region" aria-label="Upcoming Interview Reminders">
               <div className="notif-dropdown__header">
                 <strong>Schedule Alerts</strong>
-                <Badge variant="warning" size="sm">{notifications.length} Active</Badge>
+                <Badge variant="warning" size="sm">{notifications.length} Sample</Badge>
               </div>
 
               <div className="notif-dropdown__list">
@@ -191,17 +209,17 @@ export default function DashboardTopNav({
         </button>
 
         {/* Profile Avatar Chip */}
-        {profile && (
+        {safeProfile && (
           <button
             type="button"
             className="topnav-profile-btn"
             onClick={() => onSelectTab?.('profile')}
-            aria-label={`Open profile for ${profile.name}`}
+            aria-label={`Open profile for ${safeProfile.name}`}
           >
-            <div className="topnav-avatar">{profile.avatarInitials || 'PS'}</div>
+            <div className="topnav-avatar">{safeProfile.avatarInitials || 'SC'}</div>
             <div className="topnav-profile-text">
-              <span className="topnav-student-name">{profile.name}</span>
-              <span className="topnav-student-tier">{profile.eligibilityStatus}</span>
+              <span className="topnav-student-name">{safeProfile.name}</span>
+              <span className="topnav-student-tier">{safeProfile.eligibilityStatus}</span>
             </div>
           </button>
         )}

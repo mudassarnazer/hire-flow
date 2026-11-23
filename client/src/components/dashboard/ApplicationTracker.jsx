@@ -4,10 +4,24 @@ import Badge from '../common/Badge'
 import Button from '../common/Button'
 import './ApplicationTracker.css'
 
-function ApplicationTracker({ applications = [] }) {
+function ApplicationTracker({
+  applications = [],
+  searchQuery: externalSearchQuery,
+  onSearchChange: externalOnSearchChange,
+}) {
   const [filter, setFilter] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [internalSearchQuery, setInternalSearchQuery] = useState('')
   const [selectedApplication, setSelectedApplication] = useState(null)
+
+  const isControlledSearch = externalSearchQuery !== undefined
+  const searchQuery = isControlledSearch ? externalSearchQuery : internalSearchQuery
+  const handleSearchChange = (val) => {
+    if (isControlledSearch) {
+      externalOnSearchChange?.(val)
+    } else {
+      setInternalSearchQuery(val)
+    }
+  }
 
   const modalRef = useRef(null)
   const lastActiveElementRef = useRef(null)
@@ -129,19 +143,19 @@ function ApplicationTracker({ applications = [] }) {
 
   const handleResetFilters = () => {
     setFilter('all')
-    setSearchQuery('')
+    handleSearchChange('')
   }
 
   return (
     <section className="app-tracker glass-panel glass-specular-edge" aria-labelledby="tracker-heading">
       <div className="app-tracker__header">
         <div>
-          <span className="app-tracker__kicker">RECRUITMENT PIPELINE</span>
+          <span className="app-tracker__kicker">RECRUITMENT PIPELINE (SAMPLE)</span>
           <h2 id="tracker-heading" className="app-tracker__title">
             Your Applications
           </h2>
           <p className="app-tracker__subtitle">
-            Track interview rounds, review progress, and status updates.
+            Track sample interview rounds, review progress, and demonstration status updates.
           </p>
         </div>
 
@@ -212,14 +226,14 @@ function ApplicationTracker({ applications = [] }) {
             className="app-tracker__search-input"
             placeholder="Search by company or job role..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             aria-label="Search applications by company or job role"
           />
           {searchQuery && (
             <button
               type="button"
               className="app-tracker__search-clear"
-              onClick={() => setSearchQuery('')}
+              onClick={() => handleSearchChange('')}
               aria-label="Clear search query"
             >
               <span aria-hidden="true">✕</span>

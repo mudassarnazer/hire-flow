@@ -19,6 +19,7 @@ import StatCard from '../common/StatCard'
 import JobCard from '../JobCard'
 import mockStudentData from '../../data/studentData'
 import jobsData from '../../jobsData'
+import { calculateProfileCompletion } from './profileUtils'
 import './StudentDashboard.css'
 
 const TAB_LABELS = {
@@ -34,7 +35,10 @@ function StudentDashboard({ onViewChange }) {
   const [activeTab, setActiveTab] = useState('overview')
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [globalSearchQuery, setGlobalSearchQuery] = useState('')
-  const [savedJobIds, setSavedJobIds] = useState(() => new Set([1])) // Seed Google SDE as bookmarked
+  const [savedJobIds, setSavedJobIds] = useState(() => new Set([1])) // Seed initial bookmarked sample
+  const [appliedJobIds, setAppliedJobIds] = useState(() => new Set())
+  const [applications, setApplications] = useState(mockStudentData.applications)
+  const [profile, setProfile] = useState(mockStudentData.profile)
 
   // Toggle bookmarking a job
   const handleToggleSaveJob = (jobId) => {
@@ -49,8 +53,46 @@ function StudentDashboard({ onViewChange }) {
     })
   }
 
-  // Derive dynamic metrics from applications
-  const applications = mockStudentData.applications
+  // Handle simulated job application submission
+  const handleApplyJob = (jobId) => {
+    setAppliedJobIds((prev) => {
+      const next = new Set(prev)
+      next.add(jobId)
+      return next
+    })
+
+    const job = jobsData.find((j) => j.id === jobId)
+    if (job) {
+      setApplications((prev) => {
+        const existingApp = prev.find((a) => a.id === `app-job-${job.id}`)
+        if (existingApp) return prev
+
+        const newApp = {
+          id: `app-job-${job.id}`,
+          company: job.company,
+          role: job.title,
+          location: job.location,
+          stipend: job.salary,
+          appliedDate: 'Today (Simulated)',
+          currentStage: 'Application Submitted (Sample)',
+          status: 'Under Review',
+          statusVariant: 'accent',
+          nextAction: 'Demonstration review process',
+          isSample: true,
+        }
+        return [newApp, ...prev]
+      })
+    }
+  }
+
+  const handleUpdateProfile = (updates) => {
+    setProfile((prev) => ({
+      ...prev,
+      ...updates,
+    }))
+  }
+
+  // Derive dynamic metrics from applications state
   const totalSubmitted = applications.length
   const underReviewCount = applications.filter((app) => app.status === 'Under Review').length
   const interviewsCount = applications.filter((app) => app.status === 'Interview Scheduled').length
@@ -65,7 +107,7 @@ function StudentDashboard({ onViewChange }) {
           return {
             ...metric,
             value: String(underReviewCount),
-            trend: `${underReviewCount} active processes`,
+            trend: `${underReviewCount} active sample processes`,
           }
         case 'Interviews Scheduled':
           return { ...metric, value: String(interviewsCount) }
@@ -77,12 +119,29 @@ function StudentDashboard({ onViewChange }) {
     })
   }, [totalSubmitted, underReviewCount, interviewsCount, offersCount])
 
+  // Dynamic profile completion
+  const { percentage: profileCompletionPercent } = calculateProfileCompletion(profile)
+
   // Badge counts for sidebar
   const sidebarCounts = {
     applicationsCount: totalSubmitted,
     opportunitiesCount: jobsData.length,
     savedCount: savedJobIds.size,
+    profileCompletionBadge: `${profileCompletionPercent}% (Sample)`,
   }
+
+  // Filter preview opportunities on overview tab when global search query is active
+  const overviewPreviewJobs = useMemo(() => {
+    if (!globalSearchQuery.trim()) return jobsData.slice(0, 2)
+    const q = globalSearchQuery.trim().toLowerCase()
+    return jobsData.filter(
+      (job) =>
+        job.title.toLowerCase().includes(q) ||
+        job.company.toLowerCase().includes(q) ||
+        job.location.toLowerCase().includes(q) ||
+        job.skills.some((s) => s.toLowerCase().includes(q))
+    )
+  }, [globalSearchQuery])
 
   return (
     <div className="student-dashboard-root">
@@ -95,7 +154,7 @@ function StudentDashboard({ onViewChange }) {
           isOpen={isMobileSidebarOpen}
           onClose={() => setIsMobileSidebarOpen(false)}
           onExitToLanding={() => onViewChange?.('landing')}
-          profile={mockStudentData.profile}
+          profile={profile}
         />
 
         {/* Content Area */}
@@ -106,9 +165,10 @@ function StudentDashboard({ onViewChange }) {
             activeTabLabel={TAB_LABELS[activeTab] || 'Dashboard'}
             searchQuery={globalSearchQuery}
             onSearchChange={setGlobalSearchQuery}
+            isSidebarOpen={isMobileSidebarOpen}
             onOpenSidebar={() => setIsMobileSidebarOpen(true)}
             onSelectTab={setActiveTab}
-            profile={mockStudentData.profile}
+            profile={profile}
             notifications={mockStudentData.upcomingSchedule}
           />
 
@@ -119,7 +179,7 @@ function StudentDashboard({ onViewChange }) {
               <div className="tab-pane tab-pane--overview">
                 {/* C. STUDENT OVERVIEW WELCOME HEADER */}
                 <DashboardHeader
-                  profile={mockStudentData.profile}
+                  profile={profile}
                   onExploreJobs={() => setActiveTab('opportunities')}
                   onViewSchedule={() => {
                     const el = document.getElementById('upcoming-schedule-aside')
@@ -150,20 +210,24 @@ function StudentDashboard({ onViewChange }) {
                   {/* Left Main Column: Application Tracker & Matched Drives */}
                   <div className="dashboard-overview-main space-y-6">
                     {/* D. APPLICATION TRACKING */}
-                    <ApplicationTracker applications={applications} />
+                    <ApplicationTracker
+                      applications={applications}
+                      searchQuery={globalSearchQuery}
+                      onSearchChange={setGlobalSearchQuery}
+                    />
 
                     {/* E. RECOMMENDED OPPORTUNITIES PREVIEW */}
                     <section className="dashboard-jobs-preview p-6 rounded-2xl bg-[var(--surface-card)] border border-[var(--glass-border)]">
                       <div className="flex items-center justify-between pb-4 mb-5 border-b border-[var(--glass-border)] flex-wrap gap-3">
                         <div>
                           <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[var(--color-accent)] font-mono block mb-1">
-                            MATCHED RECRUITMENT DRIVES
+                            CURATED SAMPLE DRIVES
                           </span>
                           <h2 className="text-xl font-bold text-[var(--text-primary)]">
-                            Recommended for Your Profile
+                            Recommended Sample Opportunities
                           </h2>
                           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                            Roles tailored to your verified skills: {mockStudentData.profile.skills.slice(0, 3).join(', ')}.
+                            Sample roles matching candidate technical skills: {(profile.skills || []).slice(0, 3).join(', ')}.
                           </p>
                         </div>
 
@@ -172,27 +236,33 @@ function StudentDashboard({ onViewChange }) {
                           className="text-xs font-bold text-[var(--color-accent)] hover:underline flex items-center gap-1 cursor-pointer"
                           onClick={() => setActiveTab('opportunities')}
                         >
-                          <span>View All Drives ({jobsData.length})</span>
+                          <span>View All Sample Drives ({jobsData.length})</span>
                           <span aria-hidden="true">→</span>
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        {jobsData.slice(0, 2).map((job) => (
-                          <JobCard
-                            key={job.id}
-                            title={job.title}
-                            company={job.company}
-                            location={job.location}
-                            type={job.type}
-                            salary={job.salary}
-                            skills={job.skills}
-                            isSaved={savedJobIds.has(job.id)}
-                            onToggleSave={() => handleToggleSaveJob(job.id)}
-                            onViewDetails={() => setActiveTab('opportunities')}
-                          />
-                        ))}
-                      </div>
+                      {overviewPreviewJobs.length === 0 ? (
+                        <div className="text-center py-8 text-xs text-[var(--text-secondary)]">
+                          No sample drives match &ldquo;{globalSearchQuery}&rdquo;.
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                          {overviewPreviewJobs.slice(0, 2).map((job) => (
+                            <JobCard
+                              key={job.id}
+                              title={job.title}
+                              company={job.company}
+                              location={job.location}
+                              type={job.type}
+                              salary={job.salary}
+                              skills={job.skills}
+                              isSaved={savedJobIds.has(job.id)}
+                              onToggleSave={() => handleToggleSaveJob(job.id)}
+                              onViewDetails={() => setActiveTab('opportunities')}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </section>
                   </div>
 
@@ -200,7 +270,7 @@ function StudentDashboard({ onViewChange }) {
                   <div id="upcoming-schedule-aside" className="dashboard-overview-aside">
                     <UpcomingSchedule
                       schedule={mockStudentData.upcomingSchedule}
-                      resumeScore={mockStudentData.profile.resumeScore}
+                      resumeScore={profile.resumeScore}
                     />
                   </div>
                 </div>
@@ -210,7 +280,11 @@ function StudentDashboard({ onViewChange }) {
             {/* TAB 2: MY APPLICATIONS */}
             {activeTab === 'applications' && (
               <div className="tab-pane tab-pane--applications">
-                <ApplicationTracker applications={applications} />
+                <ApplicationTracker
+                  applications={applications}
+                  searchQuery={globalSearchQuery}
+                  onSearchChange={setGlobalSearchQuery}
+                />
               </div>
             )}
 
@@ -220,10 +294,11 @@ function StudentDashboard({ onViewChange }) {
                 <BrowseOpportunitiesView
                   jobs={jobsData}
                   savedJobIds={savedJobIds}
+                  appliedJobIds={appliedJobIds}
                   onToggleSaveJob={handleToggleSaveJob}
-                  onApplyJob={(jobId) => {
-                    console.log(`[Dashboard] Application submitted for job #${jobId}`)
-                  }}
+                  onApplyJob={handleApplyJob}
+                  searchQuery={globalSearchQuery}
+                  onSearchChange={setGlobalSearchQuery}
                 />
               </div>
             )}
@@ -236,6 +311,7 @@ function StudentDashboard({ onViewChange }) {
                   savedJobIds={savedJobIds}
                   onToggleSaveJob={handleToggleSaveJob}
                   onNavigateToBrowse={() => setActiveTab('opportunities')}
+                  searchQuery={globalSearchQuery}
                 />
               </div>
             )}
@@ -243,7 +319,10 @@ function StudentDashboard({ onViewChange }) {
             {/* TAB 5: STUDENT PROFILE & ATS */}
             {activeTab === 'profile' && (
               <div className="tab-pane tab-pane--profile">
-                <StudentProfileView profile={mockStudentData.profile} />
+                <StudentProfileView
+                  profile={profile}
+                  onUpdateProfile={handleUpdateProfile}
+                />
               </div>
             )}
 

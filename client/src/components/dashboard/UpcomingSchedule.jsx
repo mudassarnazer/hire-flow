@@ -1,3 +1,9 @@
+/**
+ * UpcomingSchedule Component
+ * Calendar & Interview Sessions with Simulated ATS Placement Score Gauge
+ * Developer Attribution: MUDASSAR NAZER
+ */
+
 import { useId } from 'react'
 import Badge from '../common/Badge'
 import Button from '../common/Button'
@@ -19,15 +25,15 @@ function UpcomingSchedule({ schedule = [], resumeScore = 92 }) {
   const strokeDashoffset = circumference - (circumference * numericScore) / 100
 
   return (
-    <aside className="upcoming-schedule" aria-label="Upcoming schedule and placement readiness">
+    <aside className="upcoming-schedule" aria-label="Upcoming schedule and simulated placement readiness">
       <div className="schedule-card glass-panel glass-specular-edge">
         <div className="schedule-card__header">
           <div>
-            <span className="schedule-card__kicker">CALENDAR & SESSIONS</span>
+            <span className="schedule-card__kicker">CALENDAR & SESSIONS (SAMPLE)</span>
             <h2 className="schedule-card__title">Upcoming Schedule</h2>
           </div>
-          <Badge variant="accent" size="sm">
-            Live Schedule
+          <Badge variant="neutral" size="sm">
+            Sample Schedule
           </Badge>
         </div>
 
@@ -47,7 +53,7 @@ function UpcomingSchedule({ schedule = [], resumeScore = 92 }) {
                   </div>
                   {item.isUpcoming && (
                     <Badge variant="warning" dot size="sm">
-                      Next Up
+                      Next Up (Sample)
                     </Badge>
                   )}
                 </div>
@@ -75,8 +81,13 @@ function UpcomingSchedule({ schedule = [], resumeScore = 92 }) {
                   <span className="schedule-item__interviewer">
                     <span aria-hidden="true">👤</span> {item.interviewer}
                   </span>
-                  <Button variant="outline" size="sm">
-                    Session Link →
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    aria-label={`View simulated session details for ${item.company}`}
+                  >
+                    Demo Link →
                   </Button>
                 </div>
               </div>
@@ -85,18 +96,18 @@ function UpcomingSchedule({ schedule = [], resumeScore = 92 }) {
         </div>
       </div>
 
-      {/* Placement Readiness & ATS Score Card */}
+      {/* Simulated Placement Readiness & ATS Score Card */}
       <div className="readiness-card glass-panel glass-specular-edge">
         <div className="readiness-card__header">
-          <span className="readiness-card__kicker">AI READINESS</span>
-          <h3 className="readiness-card__title">Placement Score</h3>
+          <span className="readiness-card__kicker">AI READINESS (SIMULATED)</span>
+          <h3 className="readiness-card__title">Placement Score (Simulated)</h3>
         </div>
 
         <div className="readiness-card__meter">
           <div
             className="readiness-card__score-circle"
             role="img"
-            aria-label={`Placement readiness score ${numericScore} out of 100`}
+            aria-label={`Simulated placement readiness score ${numericScore} out of 100`}
           >
             <svg
               className="readiness-card__score-svg"
@@ -136,15 +147,15 @@ function UpcomingSchedule({ schedule = [], resumeScore = 92 }) {
           </div>
 
           <div className="readiness-card__feedback">
-            <strong>Excellent Profile Match</strong>
-            <p>Your resume and coding performance qualify for top-tier campus recruitment drives.</p>
+            <strong>Simulated Score Overview</strong>
+            <p>Illustrative ATS calculation based on sample resume keywords. Not linked to employer systems.</p>
           </div>
         </div>
 
         <div className="readiness-card__tags">
-          <Badge variant="success" size="sm">✓ Verified CGPA</Badge>
-          <Badge variant="primary" size="sm">✓ Coding Verified</Badge>
-          <Badge variant="accent" size="sm">✓ ATS Optimized</Badge>
+          <Badge variant="neutral" size="sm">Sample CGPA</Badge>
+          <Badge variant="neutral" size="sm">Self-Reported Skills</Badge>
+          <Badge variant="accent" size="sm">Simulated ATS</Badge>
         </div>
       </div>
     </aside>

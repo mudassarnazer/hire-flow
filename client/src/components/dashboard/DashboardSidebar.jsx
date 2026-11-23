@@ -68,8 +68,8 @@ const NAV_ITEMS = [
         <circle cx="12" cy="7" r="4" />
       </svg>
     ),
-    staticBadge: '92%',
-    description: 'Academic credentials & score',
+    badgeKey: 'profileCompletionBadge',
+    description: 'Candidate profile & simulated ATS',
   },
   {
     id: 'settings',
@@ -94,20 +94,86 @@ export default function DashboardSidebar({
   profile,
 }) {
   const sidebarRef = useRef(null)
+  const closeBtnRef = useRef(null)
+  const previousActiveElementRef = useRef(null)
 
-  // Handle Escape key to dismiss mobile drawer
+  // Manage drawer accessibility: focus trap, escape key, focus restoration & body scroll lock
   useEffect(() => {
     if (!isOpen) return
 
+    // Store active element when drawer opens to restore later
+    previousActiveElementRef.current = document.activeElement
+
+    const originalOverflow = document.body.style.overflow
+    // Prevent background scrolling on smaller viewports
+    document.body.style.overflow = 'hidden'
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
+        e.preventDefault()
         onClose?.()
+        return
+      }
+
+      if (e.key === 'Tab') {
+        const sidebar = sidebarRef.current
+        if (!sidebar) return
+
+        const focusable = Array.from(
+          sidebar.querySelectorAll(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        )
+
+        if (focusable.length === 0) {
+          e.preventDefault()
+          return
+        }
+
+        const firstElement = focusable[0]
+        const lastElement = focusable[focusable.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !sidebar.contains(document.activeElement)) {
+            e.preventDefault()
+            lastElement.focus()
+          }
+        } else {
+          if (document.activeElement === lastElement || !sidebar.contains(document.activeElement)) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+
+    // Move initial focus to close button in mobile view
+    const focusTimer = setTimeout(() => {
+      closeBtnRef.current?.focus()
+    }, 15)
+
+    return () => {
+      clearTimeout(focusTimer)
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = originalOverflow
+
+      // Restore focus to opener element
+      if (
+        previousActiveElementRef.current &&
+        typeof previousActiveElementRef.current.focus === 'function'
+      ) {
+        previousActiveElementRef.current.focus()
+      }
+    }
   }, [isOpen, onClose])
+
+  const safeProfile = profile || {
+    name: 'Sample Candidate',
+    rollNumber: 'DEMO-2027-CS',
+    avatarInitials: 'SC',
+  }
 
   return (
     <>
@@ -138,6 +204,7 @@ export default function DashboardSidebar({
 
           {/* Mobile Close Button */}
           <button
+            ref={closeBtnRef}
             type="button"
             className="dashboard-sidebar__close-btn"
             onClick={onClose}
@@ -149,7 +216,7 @@ export default function DashboardSidebar({
 
         {/* Live System Status Beacon */}
         <div className="dashboard-sidebar__status">
-          <StatusBeacon variant="emerald" label="Autumn Cycle Active" />
+          <StatusBeacon variant="emerald" label="Demonstration Cycle" />
         </div>
 
         {/* Main Navigation List */}
@@ -175,15 +242,17 @@ export default function DashboardSidebar({
                     </span>
                     <span className="btn-label">{item.label}</span>
 
-                    {/* Badge or Count Indicator */}
+                    {/* Numeric Count Indicator */}
                     {typeof count === 'number' && (
                       <span className={`btn-count ${isActive ? 'btn-count--active' : ''}`}>
                         {count}
                       </span>
                     )}
-                    {item.staticBadge && (
-                      <Badge variant="accent" size="sm" className="btn-static-badge">
-                        {item.staticBadge}
+
+                    {/* Non-numeric String Badge (e.g. Sample Profile Completion) */}
+                    {typeof count === 'string' && (
+                      <Badge variant="neutral" size="sm" className="btn-static-badge">
+                        {count}
                       </Badge>
                     )}
 
@@ -199,34 +268,24 @@ export default function DashboardSidebar({
 
         {/* Bottom Student Profile Card & Exit Action */}
         <div className="dashboard-sidebar__footer">
-          {profile && (
-            <div
-              className="sidebar-student-card"
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                onSelectTab?.('profile')
-                onClose?.()
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  onSelectTab?.('profile')
-                  onClose?.()
-                }
-              }}
-              aria-label="View student profile details"
-              title="Click to view student profile"
-            >
-              <div className="student-avatar" aria-hidden="true">
-                {profile.avatarInitials || 'ST'}
-              </div>
-              <div className="student-info">
-                <strong className="student-name">{profile.name}</strong>
-                <span className="student-meta">{profile.rollNumber || 'Class of 2027'}</span>
-              </div>
+          <button
+            type="button"
+            className="sidebar-student-card"
+            onClick={() => {
+              onSelectTab?.('profile')
+              onClose?.()
+            }}
+            aria-label={`View student profile details for ${safeProfile.name}`}
+            title="Click to view student profile"
+          >
+            <div className="student-avatar" aria-hidden="true">
+              {safeProfile.avatarInitials || 'SC'}
             </div>
-          )}
+            <div className="student-info">
+              <strong className="student-name">{safeProfile.name}</strong>
+              <span className="student-meta">{safeProfile.rollNumber || 'Class of 2027'}</span>
+            </div>
+          </button>
 
           {onExitToLanding && (
             <button

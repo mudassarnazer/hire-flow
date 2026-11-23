@@ -13,56 +13,114 @@ import Button from '../common/Button'
 export default function BrowseOpportunitiesView({
   jobs = [],
   savedJobIds = new Set(),
+  appliedJobIds = new Set(),
   onToggleSaveJob,
   onApplyJob,
+  searchQuery = '',
+  onSearchChange,
 }) {
   const [filterType, setFilterType] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
   const [selectedJob, setSelectedJob] = useState(null)
-  const [appliedStatus, setAppliedStatus] = useState({}) // { [jobId]: true }
 
   const modalRef = useRef(null)
   const closeBtnRef = useRef(null)
+  const lastActiveElementRef = useRef(null)
 
   // Filter jobs by category and search query
+  const normalizedQuery = (searchQuery || '').trim().toLowerCase()
   const filteredJobs = jobs.filter((job) => {
     const matchesType = filterType === 'all' || job.type === filterType
     if (!matchesType) return false
 
-    if (!searchQuery.trim()) return true
-    const q = searchQuery.toLowerCase()
-    const matchesTitle = job.title.toLowerCase().includes(q)
-    const matchesCompany = job.company.toLowerCase().includes(q)
-    const matchesLocation = job.location.toLowerCase().includes(q)
-    const matchesSkills = job.skills.some((s) => s.toLowerCase().includes(q))
+    if (!normalizedQuery) return true
+    const matchesTitle = (job.title || '').toLowerCase().includes(normalizedQuery)
+    const matchesCompany = (job.company || '').toLowerCase().includes(normalizedQuery)
+    const matchesLocation = (job.location || '').toLowerCase().includes(normalizedQuery)
+    const matchesSkills =
+      Array.isArray(job.skills) &&
+      job.skills.some((s) => s.toLowerCase().includes(normalizedQuery))
+
     return matchesTitle || matchesCompany || matchesLocation || matchesSkills
   })
 
-  // Modal accessibility: focus trap & Escape handling
+  // Open modal and capture the invoking element for focus restoration
+  const handleOpenDetails = (job) => {
+    lastActiveElementRef.current = document.activeElement
+    setSelectedJob(job)
+  }
+
+  const handleCloseDetails = () => {
+    setSelectedJob(null)
+  }
+
+  // Modal accessibility: focus trap, Escape dismissal, body scroll lock, focus restoration
   useEffect(() => {
     if (!selectedJob) return
 
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        setSelectedJob(null)
+        e.preventDefault()
+        handleCloseDetails()
+        return
+      }
+
+      if (e.key === 'Tab') {
+        const modal = modalRef.current
+        if (!modal) return
+
+        const focusable = Array.from(
+          modal.querySelectorAll(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        )
+
+        if (focusable.length === 0) {
+          e.preventDefault()
+          return
+        }
+
+        const firstElement = focusable[0]
+        const lastElement = focusable[focusable.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !modal.contains(document.activeElement)) {
+            e.preventDefault()
+            lastElement.focus()
+          }
+        } else {
+          if (document.activeElement === lastElement || !modal.contains(document.activeElement)) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
       }
     }
 
-    const originalOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', handleKeyDown)
-    closeBtnRef.current?.focus()
+
+    const focusTimer = setTimeout(() => {
+      closeBtnRef.current?.focus()
+    }, 15)
 
     return () => {
+      clearTimeout(focusTimer)
       document.body.style.overflow = originalOverflow
       window.removeEventListener('keydown', handleKeyDown)
+
+      // Restore focus to opener element
+      if (
+        lastActiveElementRef.current &&
+        typeof lastActiveElementRef.current.focus === 'function'
+      ) {
+        lastActiveElementRef.current.focus()
+      }
     }
   }, [selectedJob])
 
-  const handleApply = (jobId) => {
-    setAppliedStatus((prev) => ({ ...prev, [jobId]: true }))
-    onApplyJob?.(jobId)
-  }
+  const isSelectedJobApplied = selectedJob ? appliedJobIds.has(selectedJob.id) : false
 
   return (
     <section className="browse-opportunities-view" aria-labelledby="browse-drives-heading">
@@ -70,13 +128,13 @@ export default function BrowseOpportunitiesView({
       <div className="view-header-bar flex flex-wrap items-center justify-between gap-4 mb-6 pb-5 border-b border-[var(--glass-border)]">
         <div>
           <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[var(--color-accent)] font-mono block mb-1">
-            CORPORATE PLACEMENT DRIVES
+            CURATED SAMPLE DRIVES (DEMO)
           </span>
           <h2 id="browse-drives-heading" className="text-2xl font-extrabold text-[var(--text-primary)] tracking-[-0.02em]">
             Browse Opportunities
           </h2>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Explore verified placement drives with transparent compensation and direct eligibility pre-checks.
+            Explore sample placement opportunities with illustrative compensation benchmarks and role descriptions.
           </p>
         </div>
 
@@ -118,21 +176,21 @@ export default function BrowseOpportunitiesView({
         </div>
       </div>
 
-      {/* Search Input Bar */}
+      {/* Search Input Bar (connected with global search) */}
       <div className="relative mb-6">
         <input
-          type="text"
+          type="search"
           className="w-full h-11 bg-[var(--surface-card)] border border-[var(--glass-border)] rounded-xl px-4 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent-border)] focus:shadow-[0_0_16px_var(--color-accent-subtle)]"
-          placeholder="Filter by role title, company name, skills, or location..."
+          placeholder="Filter opportunities by role title, company name, skills, or location..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => onSearchChange?.(e.target.value)}
           aria-label="Filter opportunities by role, company, skills, or location"
         />
         {searchQuery && (
           <button
             type="button"
             className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
-            onClick={() => setSearchQuery('')}
+            onClick={() => onSearchChange?.('')}
             aria-label="Clear opportunity search"
           >
             ✕
@@ -144,16 +202,18 @@ export default function BrowseOpportunitiesView({
       {filteredJobs.length === 0 ? (
         <div className="text-center py-16 bg-[var(--surface-card)] rounded-2xl border border-[var(--glass-border)]">
           <span className="text-3xl block mb-2" aria-hidden="true">🔍</span>
-          <h3 className="text-base font-bold text-[var(--text-primary)]">No matching placement drives</h3>
+          <h3 className="text-base font-bold text-[var(--text-primary)]">No matching placement opportunities</h3>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Try adjusting your search criteria or reset filters to view all drives.
+            {searchQuery
+              ? `No sample drives match "${searchQuery}". Try a different keyword.`
+              : 'Try adjusting your category filter to view all sample drives.'}
           </p>
           <Button
             variant="secondary"
             size="sm"
             onClick={() => {
               setFilterType('all')
-              setSearchQuery('')
+              onSearchChange?.('')
             }}
             className="mt-4"
           >
@@ -173,7 +233,7 @@ export default function BrowseOpportunitiesView({
               skills={job.skills}
               isSaved={savedJobIds.has(job.id)}
               onToggleSave={() => onToggleSaveJob?.(job.id)}
-              onViewDetails={() => setSelectedJob(job)}
+              onViewDetails={() => handleOpenDetails(job)}
             />
           ))}
         </div>
@@ -184,7 +244,7 @@ export default function BrowseOpportunitiesView({
         createPortal(
           <div
             className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={() => setSelectedJob(null)}
+            onClick={handleCloseDetails}
             role="presentation"
           >
             <div
@@ -214,7 +274,7 @@ export default function BrowseOpportunitiesView({
                   ref={closeBtnRef}
                   type="button"
                   className="w-8 h-8 rounded-lg bg-[var(--surface-glass)] border border-[var(--glass-border)] flex items-center justify-center text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
-                  onClick={() => setSelectedJob(null)}
+                  onClick={handleCloseDetails}
                   aria-label="Close job details modal"
                 >
                   ✕
@@ -223,19 +283,24 @@ export default function BrowseOpportunitiesView({
 
               <div className="space-y-4 mb-6">
                 <div>
-                  <span className="text-xs font-semibold text-[var(--text-muted)] block mb-1 uppercase tracking-wider">
-                    Role Overview
-                  </span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-semibold text-[var(--text-muted)] block uppercase tracking-wider">
+                      Sample Role Overview (Demonstration)
+                    </span>
+                    <Badge variant="neutral" size="sm">Prototype Sample Data</Badge>
+                  </div>
                   <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                    Join {selectedJob.company} as a {selectedJob.title}. In this role, you will work with
-                    engineering leads to design and deploy scalable applications, participate in code reviews,
-                    and contribute to live production services.
+                    {selectedJob.sampleDescription ||
+                      `Join ${selectedJob.company} as a ${selectedJob.title}. In this role, you will work on engineering prototypes, participate in code reviews, and test software components.`}
+                  </p>
+                  <p className="text-[11px] text-[var(--text-muted)] italic mt-1.5">
+                    Note: This listing is provided for UI prototyping and workflow evaluation only. No actual employment relationship or recruiter engagement is created.
                   </p>
                 </div>
 
                 <div>
                   <span className="text-xs font-semibold text-[var(--text-muted)] block mb-1 uppercase tracking-wider">
-                    Required Technical Proficiencies
+                    Required Technical Proficiencies (Sample)
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedJob.skills.map((skill) => (
@@ -252,14 +317,14 @@ export default function BrowseOpportunitiesView({
                     <strong className="text-[var(--text-primary)] font-semibold">{selectedJob.type}</strong>
                   </div>
                   <div>
-                    <span className="text-[var(--text-muted)] block">Eligibility Pre-Check</span>
-                    <strong className="text-emerald-400 font-semibold">Tier-1 Eligible ✓</strong>
+                    <span className="text-[var(--text-muted)] block">Demonstration Eligibility Track</span>
+                    <strong className="text-[var(--color-accent)] font-semibold">Standard Campus Track</strong>
                   </div>
                 </div>
 
-                {appliedStatus[selectedJob.id] && (
+                {isSelectedJobApplied && (
                   <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-400 text-xs font-semibold flex items-center gap-2">
-                    <span aria-hidden="true">✓</span> Sample Application Submitted Successfully (Demonstration State).
+                    <span aria-hidden="true">✓</span> Simulated Application Submitted (Client State Only). No data has been transmitted to employers or stored on a backend.
                   </div>
                 )}
               </div>
@@ -277,7 +342,7 @@ export default function BrowseOpportunitiesView({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setSelectedJob(null)}
+                    onClick={handleCloseDetails}
                   >
                     Close
                   </Button>
@@ -285,10 +350,10 @@ export default function BrowseOpportunitiesView({
                   <Button
                     variant="primary"
                     size="sm"
-                    disabled={Boolean(appliedStatus[selectedJob.id])}
-                    onClick={() => handleApply(selectedJob.id)}
+                    disabled={isSelectedJobApplied}
+                    onClick={() => onApplyJob?.(selectedJob.id)}
                   >
-                    {appliedStatus[selectedJob.id] ? 'Applied' : 'Submit Application →'}
+                    {isSelectedJobApplied ? 'Application Submitted (Demo)' : 'Submit Application (Demo) →'}
                   </Button>
                 </div>
               </div>
