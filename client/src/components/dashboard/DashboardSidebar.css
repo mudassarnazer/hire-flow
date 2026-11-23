@@ -76,6 +76,11 @@
   cursor: pointer;
 }
 
+.dashboard-sidebar__close-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
 /* Status Pill */
 .dashboard-sidebar__status {
   padding: 14px 8px 10px;
@@ -118,6 +123,12 @@
   background: var(--surface-card-hover);
   color: var(--text-primary);
   border-color: var(--glass-border);
+}
+
+.dashboard-sidebar__btn:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 
 .dashboard-sidebar__btn--active {
@@ -193,6 +204,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
   padding: 8px 10px;
   border-radius: 12px;
   background: var(--surface-glass);
@@ -204,6 +219,12 @@
 .sidebar-student-card:hover {
   background: var(--surface-card-hover);
   border-color: var(--color-accent-border);
+}
+
+.sidebar-student-card:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 
 .student-avatar {
@@ -266,6 +287,12 @@
   border-color: var(--color-accent-border);
   color: var(--color-accent);
   background: var(--color-accent-subtle);
+}
+
+.sidebar-exit-btn:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 0 2px var(--color-accent);
 }
 
 .sidebar-attribution {
